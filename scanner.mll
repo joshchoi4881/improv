@@ -33,6 +33,7 @@ rule tokenize = parse
 | '@' { BIND }
 | '^' { DUP }
 | ':' { COLON }
+| '%' { DECORATOR }
 (* KEYWORDS *)
 (* DATA TYPES *)
 | "note" { NOTE }
