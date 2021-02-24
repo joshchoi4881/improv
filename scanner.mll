@@ -4,7 +4,8 @@ let lowercase = ['a'-'z']
 let uppercase = ['A'-'Z']
 let letter = lowercase | uppercase
 let digit = ['0'-'9']
-let notes = ("C" | "C#" | "D" | "D#" | "E" | "F" | "F#" | "G" | "G#" | "A" | "A#" | "B")
+let keys = ("C" | "C#" | "D" | "D#" | "E" | "F" | "F#" | "G" | "G#" | "A" | "A#" | "B")
+
 rule tokenize = parse
   [' ' '\t' '\r' '\n'] { tokenize lexbuf }
 | ';' { SEP }
@@ -58,11 +59,9 @@ rule tokenize = parse
 | "for" { FOR }
 | "return" { RETURN }
 (* LITERALS *)
-| ['0'-'6'] as lit { LIT_TONE(int_of_string lit) }
 | ("wh" | "hf" | "qr" | "ei" | "sx") as lit { LIT_RHYTHM(lit) }
-(*| ['40'-'218'] as lit { LIT_BPM(int_of_string lit) }*)
 | ("DEFAULT" | "BLUES" | "JAZZ") as lit { LIT_STYLE(lit) }
-| notes ("MAJ" | "MIN") as lit { LIT_KEY(lit) }
+| keys ("MAJ" | "MIN") as lit { LIT_KEY(lit) }
 | '"' (('\\' '"'| [^'"'])* as str) '"' { LIT_STR(str) }
 | ['0'-'9']+ as lit { LIT_INT(Int.of_string lit) }
 (* IDENTIFIERS *)
