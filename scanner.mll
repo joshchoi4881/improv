@@ -15,8 +15,8 @@ rule tokenize = parse
 | ')' { RPAREN }
 | '[' { LBRACK }
 | ']' { RBRACK }
-| '{' { LBRACE }
-| '}' { RBRACE }
+| '{' { LCURLY }
+| '}' { RCURLY }
 (* OPERATORS *)
 | '+' { PLUS }
 | '-' { MINUS }
@@ -29,7 +29,7 @@ rule tokenize = parse
 | "<=" { LTE }
 | '>' { GT }
 | ">=" { GTE }
-| ',' {COMMA}
+| ',' { COMMA }
 | '$' { CONCAT }
 | '@' { BIND }
 | '^' { DUP }
@@ -43,13 +43,12 @@ rule tokenize = parse
 | "int" { INT }
 | "bool" { BOOL }
 | "string" { STRING }
+| "map" { MAP }
 | "none" { NONE }
 (* BOOLEAN LOGIC *)
 | "and" { AND }
 | "or" { OR }
 | "not" { NOT }
-| "true" { TRUE }
-| "false" { FALSE }
 (* PROGRAM STRUCTURE *)
 | "main" { MAIN }
 | "func" { FUNC }
@@ -64,6 +63,7 @@ rule tokenize = parse
 | keys ("MAJ" | "MIN") as lit { LIT_KEY(lit) }
 | '"' (('\\' '"'| [^'"'])* as str) '"' { LIT_STR(str) }
 | ['0'-'9']+ as lit { LIT_INT(Int.of_string lit) }
+| ("true" | "false") as lit { LIT_BOOL(lit) }
 (* IDENTIFIERS *)
 | (lowercase | '_') (letter | digit | '_')* as lit { ID(lit) }
 (* COMMENTS *)
