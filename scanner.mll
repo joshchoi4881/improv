@@ -56,13 +56,14 @@ rule tokenize = parse
 | "if" { IF }
 | "else" { ELSE }
 | "for" { FOR }
+| "while" { WHILE }
 | "return" { RETURN }
 (* LITERALS *)
 | ("wh" | "hf" | "qr" | "ei" | "sx") as lit { LIT_RHYTHM(lit) }
 | ("DEFAULT" | "BLUES" | "JAZZ") as lit { LIT_STYLE(lit) }
 | keys ("MAJ" | "MIN") as lit { LIT_KEY(lit) }
 | '"' (('\\' '"'| [^'"'])* as str) '"' { LIT_STR(str) }
-| ['0'-'9']+ as lit { LIT_INT(Int.of_string lit) }
+| ['0'-'9']+ as lit { LIT_INT(int_of_string lit) }
 | ("true" | "false") as lit { LIT_BOOL(lit) }
 (* IDENTIFIERS *)
 | (lowercase | '_') (letter | digit | '_')* as lit { ID(lit) }
