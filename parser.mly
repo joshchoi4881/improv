@@ -63,13 +63,18 @@ fdecl:
         params = List.rev $6;
         vars = List.rev $9;
         body = List.rev $10 } }
+  | FUNC type ID LPAREN params_opt RPAREN LCURLY vdecl_list stmt_list RCURLY 
+    { { ftype = $2;
+        fname = $3;
+        params = List.rev $5;
+        vars = List.rev $8;
+        body = List.rev $9 } }
   | FUNC MAIN LPAREN RPAREN LCURLY vdecl_list stmt_list RCURLY 
     { { vars = List.rev $6;
         body = List.rev $7 } }
 
 dec:
-  | /* nothing */ { [] }
-  | DECORATOR LIT_KEY LIT_INT LIT_STYLE { Decorator($2, $3, $4) }
+  | DECORATOR LPAREN LIT_KEY COMMA LIT_INT COMMA LIT_STYLE RPAREN { Decorator($3, $5, $7) }
 
 params_opt:
   | /* nothing */ { [] }
@@ -91,14 +96,14 @@ type:
   | MAP LT type COMMA type GT { Map($3, $5) }
 
 vdecl_list:
-  /* nothing */ { [] }
+  | /* nothing */ { [] }
   | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
   | type ID SEP { ($1, $2) }
 
 stmt_list:
-  /* nothing */ { [] }
+  | /* nothing */ { [] }
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
@@ -111,13 +116,14 @@ stmt:
   | WHILE expr stmt                       { While($2, $3)         }
 
 expr_opt:
-  /* nothing */ { NoExpr }
+  | /* nothing */ { NoExpr }
   | expr        { $1 }
 
 expr:
   /* literals */
   | literals { $1 }
-  | ID { Var($1) }
+  | lit_map { $1 }  
+  | ID { Id($1) }
 
   /* arithmetic operations */
   | expr PLUS   expr { Binop($1, Add, $3) }
@@ -141,18 +147,18 @@ expr:
   | expr AND expr { Binop($1, And, $3) }
   | expr OR  expr { Binop($1, Or,  $3) }
 
-  /* function call */
-  | ID LPAREN args_opt RPAREN { Call($1, $3) }
-
   /* variable assignment */ 
   | ID ASSIGN expr { Assign($1, $3) }
 
+  /* function call */
+  | ID LPAREN args_opt RPAREN { Call($1, $3) }
+
 args_opt:
-    /* nothing */ { [] }
+  | /* nothing */ { [] }
   | args_list  { List.rev $1 }
 
 args_list:
-    expr                    { [$1] }
+  | expr                    { [$1] }
   | args_list COMMA expr { $3 :: $1 }
 
 literals: 
@@ -162,17 +168,16 @@ literals:
   | LIT_RHYTHM       { LitRhythm($1) }
   | lit_note         { $1 }
   | lit_array        { $1 }
-  | lit_map          { $1 }
 
 lit_note:
-  | LPAREN LIT_INT COMMA LIT_RHYTHM RPAREN  { LitNote($2, $4) }
+  | LPAREN LIT_INT LIT_RHYTHM RPAREN  { LitNote($2, $3) }
 
 lit_array:
   | LBRACK items_list RBRACK { LitArray($2) }
 
 val:
   | literals { $1 }
-  | ID { Var($1) }
+  | ID { Id($1) }
 
 items_list:
   |                 { [] }
@@ -180,7 +185,7 @@ items_list:
   | items_list COMMA val { $3 :: $1 }
 
 lit_map:
-  | LCURLY map_list RCURLY { LitMap($2) }
+  | LT map_list GT { LitMap($2) }
 
 map_list:
   |                               { [] }
