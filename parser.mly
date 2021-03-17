@@ -1,6 +1,6 @@
 %{ open Ast %}
 
-%token SEP EOF ENDLINE
+%token SEP EOF
 
 %token ASSIGN
 %token LPAREN RPAREN LBRACK RBRACK LCURLY RCURLY
@@ -14,7 +14,7 @@
 %token NOTE TONE RHYTHM
 %token INT BOOL STRING MAP NONE 
 
-%token MAIN FUNC IN IF ELSE FOR WHILE RETURN
+%token FUNC IN IF ELSE FOR WHILE RETURN
 
 %token <bool> LIT_BOOL
 %token <int> LIT_INT
@@ -56,24 +56,16 @@ decls:
   | decls fdecl { ($1, ($2 :: $1)) }
 
 fdecl:
-  | dec FUNC type ID LPAREN params_opt RPAREN LCURLY vdecl_list stmt_list RCURLY 
+  | dec FUNC typ ID LPAREN params_opt RPAREN LCURLY vdecl_list stmt_list RCURLY 
     { { fdec = $1;
         ftype = $3;
         fname = $4;
         params = List.rev $6;
         vars = List.rev $9;
         body = List.rev $10 } }
-  | FUNC type ID LPAREN params_opt RPAREN LCURLY vdecl_list stmt_list RCURLY 
-    { { ftype = $2;
-        fname = $3;
-        params = List.rev $5;
-        vars = List.rev $8;
-        body = List.rev $9 } }
-  | FUNC MAIN LPAREN RPAREN LCURLY vdecl_list stmt_list RCURLY 
-    { { vars = List.rev $6;
-        body = List.rev $7 } }
 
 dec:
+  | /* nothing */ { }
   | DECORATOR LPAREN LIT_KEY COMMA LIT_INT COMMA LIT_STYLE RPAREN { Decorator($3, $5, $7) }
 
 params_opt:
@@ -81,10 +73,10 @@ params_opt:
   | params_list { $1 }
 
 params_list:
-  | type ID                  { [($1, $2)] }
-  | params_list COMMA type ID  { ($3, $4) :: $1 }
+  | typ ID                  { [($1, $2)] }
+  | params_list COMMA typ ID  { ($3, $4) :: $1 }
 
-type:
+typ:
   | BOOL    { Bool }
   | INT     { Int }
   | STRING  { String }
@@ -92,18 +84,18 @@ type:
   | TONE    { Tone }
   | RHYTHM  { Rhythm }
   | NONE    { None }
-  | type LBRACK RBRACK { Array($1) }
-  | MAP LT type COMMA type GT { Map($3, $5) }
+  | typ LBRACK RBRACK { Array($1) }
+  | MAP LT typ COMMA typ GT { Map($3, $5) }
 
 vdecl_list:
   | /* nothing */ { [] }
   | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
-  | type ID SEP { ($1, $2) }
+  | typ ID SEP { ($1, $2) }
 
 stmt_list:
-  | /* nothing */ { [] }
+  | stmt { [$1] }
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
@@ -134,7 +126,7 @@ expr:
   /* music list operations */
   | lit_array CONCAT lit_array { Binop($1, Concat, $3) }
   | lit_array BIND lit_array { Binop($1, Bind, $3) } /* notes, tones, rhythms */
-  | val DUP LIT_INT { Binop($1, Dup, $3) }
+  | expr DUP LIT_INT { Binop($1, Dup, $3) }
 
   /* boolean operations */
   | expr EQ  expr { Binop($1, Eq,  $3) }
@@ -170,25 +162,21 @@ literals:
   | lit_array        { $1 }
 
 lit_note:
-  | LPAREN LIT_INT LIT_RHYTHM RPAREN  { LitNote($2, $3) }
+  | LT LIT_INT COMMA LIT_RHYTHM GT  { LitNote($2, $4) }
 
 lit_array:
   | LBRACK items_list RBRACK { LitArray($2) }
 
-val:
-  | literals { $1 }
-  | ID { Id($1) }
-
 items_list:
-  |                 { [] }
-  | val             { [$1] }
-  | items_list COMMA val { $3 :: $1 }
+  |                  { [] }
+  | expr             { [$1] }
+  | items_list COMMA expr { $3 :: $1 }
 
 lit_map:
-  | LT map_list GT { LitMap($2) }
+  | LCURLY map_list RCURLY { LitMap($2) }
 
 map_list:
-  |                               { [] }
-  | val COLON val                 { [($1, $3)] }
-  | map_list COMMA val COLON val  { ($3, $5) :: $1 } 
+  |                                 { [] }
+  | expr COLON expr                 { [($1, $3)] }
+  | map_list COMMA expr COLON expr  { ($3, $5) :: $1 } 
 
