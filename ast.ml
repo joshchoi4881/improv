@@ -1,19 +1,26 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
-type op = Add | Sub | Mul | Div | Eq | Neq | Lt | Lte
-          And | Or
+type op = Add | Sub | Mul | Div |
+          Eq | Neq | Lt | Lte | And | Or |
+          Concat | Bind | Dup
 
 type uop = Not
 
-type typ = Bool | Int | String | Note | Tone | Rhythm | None
+type typ = Bool | Int | String | Note | Tone | Rhythm | None |
+           Array of typ | Map of typ * typ
 
 type bind = typ * string
 
+type dec = Decorator of string * int * string
+
 type expr =
   (* Insert literal and boolean logic *)
+    LitBool of bool | LitInt of int | LitString of string
+  | LitRhythm of string | LitNote of int * string
+  | LitArray of expr list | LitMap of (expr * expr) list
   | Id of string
   | Binop of expr * op * expr
-  | Unop of uop * expr
+  | Uniop of uop * expr
   | Assign of string * expr
   | Call of string * expr list
   | Noexpr
@@ -27,10 +34,11 @@ type stmt =
   | While of expr * stmt
 
 type func_decl = {
-    typ : typ;
+    fdec : dec;
+    ftype : typ;
     fname : string;
-    formals : bind list;
-    locals : bind list;
+    params : bind list;
+    vars : bind list;
     body : stmt list;
   }
 
@@ -49,16 +57,27 @@ let string_of_op = function
   | Lte -> "<="
   | And -> "&&"
   | Or -> "||"
+  | Concat -> "$"
+  | Bind -> "@"
+  | Dup -> "^"
 
 let string_of_uop = function
     Not -> "!"
 
 let rec string_of_expr = function
   (* Insert literal and boolean logic *)
+    LitBool(true) -> "true"
+  | LitBool(false) -> "false"
+  | LitInt(i) -> string_of_int i
+  | LitString(s) -> s
+  | LitRhythm(r) -> r
+  | LitNote(i, r) -> "<" ^ string_of_int i ^ " " ^ r ^ ">"
+  | LitArray(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
+  | LitMap(ml) -> "{" ^ String.concat ", " (List.map (fun (e1, e2) -> string_of_expr e1 ^ ": " ^ string_of_expr e2) ml) ^ "}"
   | Id(s) -> s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | Unop(o, e) -> string_of_uop o ^ string_of_expr e
+  | Uniop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
@@ -77,19 +96,30 @@ let rec string_of_stmt = function
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
 
-let string_of_typ = function
+let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
-  | Float -> "float"
-  | Void -> "void"
+  | String -> "string"
+  | Note -> "note"
+  | Tone -> "tone"
+  | Rhythm -> "rhythm"
+  | None -> "none"
+  | Array(t) -> string_of_typ t ^ "[]"
+  | Map(t1, t2) -> "map <" ^ string_of_typ t1 ^ ", " ^ string_of_typ t2 ^ ">"
+
+let string_of_dec = function
+    Decorator(k, i, s) ->  "% (" ^ "key " ^ k ^ ", " ^
+      "bpm " ^ string_of_int i ^ ", " ^
+      "style " ^ s ^ ")\n"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
 let string_of_fdecl fdecl =
-  string_of_typ fdecl.typ ^ " " ^
-  fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
+  string_of_dec fdecl.fdec ^
+  string_of_typ fdecl.ftype ^ " " ^
+  fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.params) ^
   ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.locals) ^
+  String.concat "" (List.map string_of_vdecl fdecl.vars) ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
 
