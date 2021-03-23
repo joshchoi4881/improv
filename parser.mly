@@ -114,7 +114,7 @@ expr_opt:
 expr:
   /* literals */
   | literals { $1 }
-  | lit_map { $1 }  
+  | lit_map { $1 }
   | ID { Id($1) }
 
   /* arithmetic operations */
@@ -122,11 +122,6 @@ expr:
   | expr MINUS  expr { Binop($1, Sub, $3) }
   | expr TIMES  expr { Binop($1, Mul, $3) }
   | expr DIVIDE expr { Binop($1, Div, $3) }
-
-  /* music list operations */
-  | lit_array CONCAT lit_array { Binop($1, Concat, $3) }
-  | lit_array BIND lit_array { Binop($1, Bind, $3) } /* notes, tones, rhythms */
-  | expr DUP LIT_INT { Binop($1, Dup, $3) }
 
   /* boolean operations */
   | expr EQ  expr { Binop($1, Eq,  $3) }
@@ -138,6 +133,11 @@ expr:
   |      NOT expr { Uniop(Not, $2) }
   | expr AND expr { Binop($1, And, $3) }
   | expr OR  expr { Binop($1, Or,  $3) }
+
+  /* music list operations */
+  | lit_array CONCAT lit_array { Binop($1, Concat, $3) }
+  | lit_array BIND lit_array { Binop($1, Bind, $3) } /* notes, tones, rhythms */
+  | expr DUP LIT_INT { Binop($1, Dup, $3) }
 
   /* variable assignment */ 
   | ID ASSIGN expr { Assign($1, $3) }
@@ -179,4 +179,3 @@ map_list:
   |                                 { [] }
   | expr COLON expr                 { [($1, $3)] }
   | map_list COMMA expr COLON expr  { ($3, $5) :: $1 } 
-
