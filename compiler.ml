@@ -6,9 +6,7 @@
    open Scanner
    open Parser
    open Semant
-   open Pretty_type_print
    open Codegen
-   open Printf
 
    let () =
      let lexbuf = Lexing.from_channel stdin in
