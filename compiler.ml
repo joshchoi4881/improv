@@ -6,7 +6,6 @@
    open Scanner
    open Parser
    open Semant
-   open Pretty_type_print
    open Codegen
    open Printf
 
