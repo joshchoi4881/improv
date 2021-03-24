@@ -20,6 +20,9 @@ parser.native : parser.mly ast.mli scanner.mll
 scanner.native : scanner.mll
 	ocamlbuild scanner.native 
 
+improv.native : improv.ml
+	ocamlbuild improv.native
+
 # "make clean" removes all generated files
 .PHONY : clean
 clean :

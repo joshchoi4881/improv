@@ -34,7 +34,7 @@ type sfunc_decl = {
     sfname : string;
     sparams : bind list;
     svars : bind list;
-    sbody : stmt list;
+    sbody : sstmt list;
   }
 
 type sprogram = bind list * sfunc_decl list
@@ -66,7 +66,7 @@ let rec string_of_sstmt = function
       "{\n" ^ String.concat "" (List.map string_of_sstmt stmts) ^ "}\n"
   | SExpr(expr) -> string_of_sexpr expr ^ ";\n";
   | SReturn(expr) -> "return " ^ string_of_sexpr expr ^ ";\n";
-  | SIf(e, s, Block([])) -> "if " ^ string_of_sexpr e ^ "\n" ^ string_of_sstmt s
+  | SIf(e, s, SBlock([])) -> "if " ^ string_of_sexpr e ^ "\n" ^ string_of_sstmt s
   | SIf(e, s1, s2) ->  "if " ^ string_of_sexpr e ^ "\n" ^
       string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SFor(e1, e2, s) ->
