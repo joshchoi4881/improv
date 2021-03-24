@@ -11,8 +11,8 @@ test : all testall.sh
 #
 # See https://github.com/ocaml/ocamlbuild/blob/master/manual/manual.adoc
 
-compiler.native : compiler.ml codegen.ml
-	ocamlbuild -use-ocamlfind compiler.native -pkgs llvm,llvm.analysis
+improv.native : improv.ml codegen.ml
+	ocamlbuild -use-ocamlfind improv.native -pkgs llvm,llvm.analysis
 
 parser.native : parser.mly ast.mli scanner.mll
 	ocamlbuild parser.native
@@ -50,11 +50,11 @@ FAILS = \
 TESTFILES = $(TESTS:%=test-%.mc) $(TESTS:%=test-%.out) \
 	    $(FAILS:%=fail-%.mc) $(FAILS:%=fail-%.err)
 
-TARFILES = ast.ml sast.ml codegen.ml Makefile _tags compiler.ml parser.mly \
+TARFILES = ast.ml sast.ml codegen.ml Makefile _tags improv.ml parser.mly \
 	README scanner.mll semant.ml testall.sh \
 	Dockerfile \
 	$(TESTFILES:%=tests/%) 
 
-microc.tar.gz : $(TARFILES)
+improv.tar.gz : $(TARFILES)
 	cd .. && tar czf improv/improv.tar.gz \
 		$(TARFILES:%=improv/%)
