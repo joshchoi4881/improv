@@ -7,7 +7,6 @@
    open Parser
    open Semant
    open Codegen
-   open Printf
 
    let () =
      let lexbuf = Lexing.from_channel stdin in
