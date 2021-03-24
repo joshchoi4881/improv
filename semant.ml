@@ -178,7 +178,7 @@ let check (globals, functions) =
       |  _  -> raise (Failure "this statement is undefined")
 
     in (* body of check_function *)
-    { sfdec = func.fdec;
+    { sfdec = SNoDecorator;
       sftype = func.ftype;
       sfname = func.fname;
       sparams = func.params;

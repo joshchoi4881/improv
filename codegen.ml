@@ -36,7 +36,7 @@ let translate (globals, functions) =
   (* Return the LLVM type for a MicroC type *)
   let ltype_of_typ = function
       A.Int   -> i32_t
-    | A.String   -> L.pointer_type i8_t
+    (* | A.String   -> L.pointer_type i8_t *)
     (* | A.Bool  -> i1_t *)
     (* | A.Float -> float_t *)
     | A.None  -> void_t
@@ -111,7 +111,7 @@ let translate (globals, functions) =
 
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
-	    SLitInt i  -> L.const_int i32_t i
+	      SLitInt i  -> L.const_int i32_t i
       (* | SLitString s -> L.pointer_type i8_t s *)
       (* | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0) *)
       (* | SFliteral l -> L.const_float_of_string float_t l *)
