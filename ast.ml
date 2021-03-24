@@ -11,7 +11,9 @@ type typ = Bool | Int | String | Note | Tone | Rhythm | None |
 
 type bind = typ * string
 
-type dec = Decorator of string * int * string
+type dec = 
+    Decorator of string * int * string
+  | NoDecorator
 
 type expr =
     LitBool of bool 
@@ -26,7 +28,7 @@ type expr =
   | Uniop of uop * expr
   | Assign of string * expr
   | Call of string * expr list
-  | Noexpr
+  | NoExpr
 
 type stmt =
     Block of stmt list
@@ -84,7 +86,7 @@ let rec string_of_expr = function
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-  | Noexpr -> ""
+  | NoExpr -> ""
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -110,9 +112,10 @@ let rec string_of_typ = function
   | Map(t1, t2) -> "map <" ^ string_of_typ t1 ^ ", " ^ string_of_typ t2 ^ ">"
 
 let string_of_dec = function
-    Decorator(k, i, s) ->  "% (" ^ "key " ^ k ^ ", " ^
-      "bpm " ^ string_of_int i ^ ", " ^
-      "style " ^ s ^ ")\n"
+    Decorator(k, i, s) ->  "% (" ^ k ^ ", " ^
+      string_of_int i ^ ", " ^
+      s ^ ")\n"
+  | NoDecorator -> ""
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

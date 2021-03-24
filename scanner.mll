@@ -6,8 +6,8 @@ let letter = lowercase | uppercase
 let digit = ['0'-'9']
 let keys = ("C" | "C#" | "D" | "D#" | "E" | "F" | "F#" | "G" | "G#" | "A" | "A#" | "B")
 
-rule tokenize = parse
-  [' ' '\t' '\r' '\n'] { tokenize lexbuf }
+rule token = parse
+  [' ' '\t' '\r' '\n'] { token lexbuf }
 | ';' { SEP }
 | eof { EOF }
 (* SCOPING *)
@@ -50,7 +50,6 @@ rule tokenize = parse
 | "or" { OR }
 | "not" { NOT }
 (* PROGRAM STRUCTURE *)
-| "main" { MAIN }
 | "func" { FUNC }
 | "in" { IN }
 | "if" { IF }
@@ -64,7 +63,8 @@ rule tokenize = parse
 | keys ("MAJ" | "MIN") as lit { LIT_KEY(lit) }
 | '"' (('\\' '"'| [^'"'])* as str) '"' { LIT_STR(str) }
 | ['0'-'9']+ as lit { LIT_INT(int_of_string lit) }
-| ("true" | "false") as lit { LIT_BOOL(lit) }
+| "true"   { LIT_BOOL(true)  }
+| "false"  { LIT_BOOL(false) }
 (* IDENTIFIERS *)
 | (lowercase | '_') (letter | digit | '_')* as lit { ID(lit) }
 (* COMMENTS *)
@@ -77,6 +77,6 @@ and commentLine = parse
 
 and commentBlock level = parse
 | "/*" { commentBlock (level + 1) lexbuf }
-| "*/" { if level == 0 then tokenize lexbuf 
+| "*/" { if level == 0 then token lexbuf 
         else commentBlock (level - 1) lexbuf }
 | _ { commentBlock level lexbuf }

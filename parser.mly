@@ -1,6 +1,6 @@
 %{ open Ast %}
 
-%token SEP EOF
+%token SEP EOF ENDLINE
 
 %token ASSIGN
 %token LPAREN RPAREN LBRACK RBRACK LCURLY RCURLY
@@ -53,7 +53,8 @@ program:
   
 decls: 
   | /* nothing */ { ([], []) }
-  | decls fdecl { ($1, ($2 :: $1)) }
+ | decls vdecl { (($2 :: fst $1), snd $1) }
+ | decls fdecl { (fst $1, ($2 :: snd $1)) }
 
 fdecl:
   | dec FUNC typ ID LPAREN params_opt RPAREN LCURLY vdecl_list stmt_list RCURLY 
@@ -65,7 +66,7 @@ fdecl:
         body = List.rev $10 } }
 
 dec:
-  | /* nothing */ { }
+  | /* nothing */ { NoDecorator }
   | DECORATOR LPAREN LIT_KEY COMMA LIT_INT COMMA LIT_STYLE RPAREN { Decorator($3, $5, $7) }
 
 params_opt:

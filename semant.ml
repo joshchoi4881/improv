@@ -14,7 +14,7 @@ let check (globals, functions) =
 
   (* Verify a list of bindings has no void types or duplicate names *)
   let check_binds (kind : string) (binds : bind list) =
-    List.iter (function (Void, b) -> raise (Failure ("illegal void " ^ kind ^ " " ^ b))
+    List.iter (function (None, b) -> raise (Failure ("illegal void " ^ kind ^ " " ^ b))
       | _ -> ()) binds;
     let rec dups = function
         [] -> ()
@@ -32,10 +32,11 @@ let check (globals, functions) =
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls = 
     let add_bind map (name, ty) = StringMap.add name {
-      typ = Void;
+      fdec = NoDecorator;
+      ftype = None;
       fname = name; 
-      formals = [(ty, "x")];
-      locals = []; 
+      params = [(ty, "x")];
+      vars = []; 
       body = [] } map
     in List.fold_left add_bind StringMap.empty [ ("print", String)] (*Simplicity for hello world*)
   in
@@ -65,9 +66,9 @@ let check (globals, functions) =
   let _ = find_func "main" in (* Ensure "main" is defined *)
 
   let check_function func =
-    (* Make sure no formals or locals are void or duplicates *)
-    check_binds "formal" func.formals;
-    check_binds "local" func.locals;
+    (* Make sure no params or vars are void or duplicates *)
+    check_binds "params" func.params;
+    check_binds "vars" func.vars;
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -75,12 +76,12 @@ let check (globals, functions) =
        if lvaluet = rvaluet then lvaluet else raise (Failure err)
     in   
 
-    (* Build local symbol table of variables for this function *)
+    (* Build var symbol table of variables for this function *)
     let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
-	                StringMap.empty (globals @ func.formals @ func.locals )
+	                StringMap.empty (globals @ func.params @ func.vars )
     in
 
-    (* Return a variable from our local symbol table *)
+    (* Return a variable from our var symbol table *)
     let type_of_identifier s =
       try StringMap.find s symbols
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
@@ -88,8 +89,8 @@ let check (globals, functions) =
 
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec expr = function
-        Literal  l -> (Int, SLiteral l)
-      | StrLit l -> (String, SStrLit l)
+        LitInt  l -> (Int, SLitInt l)
+      | LitString l -> (String, SLitString l)
       (*Simplicity for hello world
       | Fliteral l -> (Float, SFliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
@@ -130,7 +131,7 @@ let check (globals, functions) =
           in (ty, SBinop((t1, e1'), op, (t2, e2')))*)	
       | Call(fname, args) as call -> 
           let fd = find_func fname in
-          let param_length = List.length fd.formals in
+          let param_length = List.length fd.params in
           if List.length args != param_length then
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
@@ -140,9 +141,9 @@ let check (globals, functions) =
               " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
             in (check_assign ft et err, e')
           in 
-          let args' = List.map2 check_call fd.formals args
-          in (fd.typ, SCall(fname, args'))
-      | _ -> (Void, SNoexpr)
+          let args' = List.map2 check_call fd.params args
+          in (fd.ftype, SCall(fname, args'))
+      | _ -> (None, SNoExpr)
     in
 
     (*let check_bool_expr e = 
@@ -159,10 +160,10 @@ let check (globals, functions) =
 	  SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)*)
       | Return e -> let (t, e') = expr e in
-        if t = func.typ then SReturn (t, e') 
+        if t = func.ftype then SReturn (t, e') 
         else raise (
 	  Failure ("return gives " ^ string_of_typ t ^ " expected " ^
-		   string_of_typ func.typ ^ " in " ^ string_of_expr e))
+		   string_of_typ func.ftype ^ " in " ^ string_of_expr e))
 	    
 	    (* A block is correct if each statement is correct and nothing
 	       follows any Return statement.  Nested blocks are flattened. *)
@@ -177,10 +178,11 @@ let check (globals, functions) =
       |  _  -> raise (Failure "this statement is undefined")
 
     in (* body of check_function *)
-    { styp = func.typ;
+    { sfdec = func.fdec;
+      sftype = func.ftype;
       sfname = func.fname;
-      sformals = func.formals;
-      slocals  = func.locals;
+      sparams = func.params;
+      svars  = func.vars;
       sbody = match check_stmt (Block func.body) with
 	SBlock(sl) -> sl
       | _ -> raise (Failure ("internal error: block didn't become a block?"))

@@ -2,7 +2,9 @@
 
 open Ast
 
-type sdec = SDecorator of string * int * string
+type sdec = 
+    SDecorator of string * int * string
+  | SNoDecorator
 
 type sexpr = typ * sx
 and sx =
@@ -18,7 +20,7 @@ and sx =
   | SUniop of uop * sexpr
   | SAssign of string * sexpr
   | SCall of string * sexpr list
-  | SNoexpr
+  | SNoExpr
 
 type sstmt =
     SBlock of sstmt list
@@ -58,7 +60,7 @@ let rec string_of_sexpr (t, e) =
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
-  | SNoexpr -> ""
+  | SNoExpr -> ""
 				  ) ^ ")"				     
 
 let rec string_of_sstmt = function
@@ -71,14 +73,21 @@ let rec string_of_sstmt = function
       string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SFor(e1, e2, s) ->
       "for " ^ string_of_sexpr e1  ^ " in " ^ string_of_sexpr e2 ^ string_of_sstmt s
-  | SWhile(e, s) -> "while " ^ string_of_sexpr e ^ string_of_sstmt s *)
+  | SWhile(e, s) -> "while " ^ string_of_sexpr e ^ string_of_sstmt s
+
+let string_of_sdec = function
+  SDecorator(k, i, s) ->  "% (" ^ k ^ ", " ^
+    string_of_int i ^ ", " ^
+    s ^ ")\n"
+| SNoDecorator -> ""
 
 let string_of_sfdecl fdecl =
+  string_of_sdec fdecl.sfdec ^
   string_of_typ fdecl.sftype ^ " " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sparams) ^
   ")\n{\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.svars) ^
-  String.concat "" (List.map string_of_stmt fdecl.sbody) ^
+  String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
   "}\n"
 
 let string_of_sprogram (vars, funcs) =
