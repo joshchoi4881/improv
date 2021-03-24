@@ -115,7 +115,7 @@ let translate (globals, functions) =
       (* | SLitString s -> L.pointer_type i8_t s *)
       (* | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0) *)
       (* | SFliteral l -> L.const_float_of_string float_t l *)
-      | SNoexpr     -> L.const_int i32_t 0
+      | SNoExpr     -> L.const_int i32_t 0
       (* | SId s       -> L.build_load (lookup s) s builder *)
       (* | SAssign (s, e) -> let e' = expr builder e in
                           ignore(L.build_store e' (lookup s) builder); e' *)
