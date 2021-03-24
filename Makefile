@@ -1,8 +1,8 @@
 # "make test" Compiles everything and runs the regression tests
 
-.PHONY : test
-test : all testall.sh
-	./testall.sh
+# .PHONY : test
+# test : all testall.sh
+# 	./testall.sh
 
 # "make microc.native" compiles the compiler
 #
@@ -50,8 +50,9 @@ FAILS = \
 TESTFILES = $(TESTS:%=test-%.mc) $(TESTS:%=test-%.out) \
 	    $(FAILS:%=fail-%.mc) $(FAILS:%=fail-%.err)
 
+# testall.sh
 TARFILES = ast.ml sast.ml codegen.ml Makefile _tags improv.ml parser.mly \
-	README scanner.mll semant.ml testall.sh \
+	README scanner.mll semant.ml \
 	Dockerfile \
 	$(TESTFILES:%=tests/%) 
 

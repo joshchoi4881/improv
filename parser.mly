@@ -18,7 +18,7 @@
 
 %token <bool> LIT_BOOL
 %token <int> LIT_INT
-%token <string> LIT_STR 
+%token <string> LIT_STRING
 %token <string> LIT_KEY 
 %token <string> LIT_STYLE 
 %token <string> LIT_RHYTHM
@@ -138,7 +138,7 @@ expr:
   /* music list operations */
   | lit_array CONCAT lit_array { Binop($1, Concat, $3) }
   | lit_array BIND lit_array { Binop($1, Bind, $3) } /* notes, tones, rhythms */
-  | expr DUP LIT_INT { Binop($1, Dup, $3) }
+  | expr DUP expr { Binop($1, Dup, $3) } /* LIT_INT */
 
   /* variable assignment */ 
   | ID ASSIGN expr { Assign($1, $3) }
@@ -157,7 +157,7 @@ args_list:
 literals: 
   | LIT_BOOL         { LitBool($1) }
   | LIT_INT          { LitInt($1) }
-  | LIT_STR          { LitStr($1) }
+  | LIT_STRING       { LitString($1) }
   | LIT_RHYTHM       { LitRhythm($1) }
   | lit_note         { $1 }
   | lit_array        { $1 }
