@@ -26,7 +26,7 @@ type sstmt =
   | SReturn of sexpr
   | SIf of sexpr * sstmt * sstmt
   | SFor of sexpr * sexpr * sstmt
-  | SWhile of sexpr * sstmt
+  | SWhile of sexpr * sstmt 
 
 type sfunc_decl = {
     sfdec : sdec;
@@ -71,14 +71,14 @@ let rec string_of_sstmt = function
       string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SFor(e1, e2, s) ->
       "for " ^ string_of_sexpr e1  ^ " in " ^ string_of_sexpr e2 ^ string_of_sstmt s
-  | SWhile(e, s) -> "while " ^ string_of_sexpr e ^ string_of_sstmt s
+  | SWhile(e, s) -> "while " ^ string_of_sexpr e ^ string_of_sstmt s *)
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.sftype ^ " " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sparams) ^
   ")\n{\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.svars) ^
-  String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
+  String.concat "" (List.map string_of_stmt fdecl.sbody) ^
   "}\n"
 
 let string_of_sprogram (vars, funcs) =
