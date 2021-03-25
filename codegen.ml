@@ -31,12 +31,13 @@ let translate (globals, functions) =
   and i8_t       = L.i8_type     context
   (* and i1_t       = L.i1_type     context
   and float_t    = L.double_type context *)
+  and string_t   = L.pointer_type (L.i8_type context)
   and void_t     = L.void_type   context in
 
   (* Return the LLVM type for a MicroC type *)
   let ltype_of_typ = function
       A.Int   -> i32_t
-    (* | A.String   -> L.pointer_type i8_t *)
+    | A.String   -> string_t
     (* | A.Bool  -> i1_t *)
     (* | A.Float -> float_t *)
     | A.None  -> void_t
@@ -78,8 +79,8 @@ let translate (globals, functions) =
     let builder = L.builder_at_end context (L.entry_block the_function) in
 
     let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder
-    (* and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder *)
-    and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
+    and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder in
+    (* and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in *)
 
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -112,7 +113,7 @@ let translate (globals, functions) =
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
 	      SLitInt i  -> L.const_int i32_t i
-      (* | SLitString s -> L.pointer_type i8_t s *)
+      | SLitString s -> L.build_global_stringptr s "str" builder
       (* | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0) *)
       (* | SFliteral l -> L.const_float_of_string float_t l *)
       | SNoExpr     -> L.const_int i32_t 0
@@ -166,7 +167,7 @@ let translate (globals, functions) =
       (* | SCall ("printbig", [e]) ->
 	  L.build_call printbig_func [| (expr builder e) |] "printbig" builder *)
       | SCall ("printf", [e]) -> 
-	    L.build_call printf_func [| string_format_str ; (expr builder e) |]
+	    L.build_call printf_func [| float_format_str ; (expr builder e) |]
 	    "printf" builder
       | SCall (f, args) ->
          let (fdef, fdecl) = StringMap.find f function_decls in
