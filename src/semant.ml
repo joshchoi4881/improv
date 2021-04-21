@@ -32,7 +32,6 @@ let check (globals, functions) =
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls = 
     let add_bind map (name, ty) = StringMap.add name {
-      fdec = NoDecorator;
       ftype = None;
       fname = name; 
       params = [(ty, "x")];
@@ -178,8 +177,7 @@ let check (globals, functions) =
       |  _  -> raise (Failure "this statement is undefined")
 
     in (* body of check_function *)
-    { sfdec = SNoDecorator;
-      sftype = func.ftype;
+    { sftype = func.ftype;
       sfname = func.fname;
       sparams = func.params;
       svars  = func.vars;
