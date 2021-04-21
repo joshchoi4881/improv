@@ -1,0 +1,19 @@
+func int recursive_gcd(int x, int y) {
+    if (x == 0){
+        return y;
+    }
+    if (y == 0){
+        return x;
+    }
+    if (x > y){
+        return gcd(x%y, y);
+    } else {
+        return gcd(y%x, x);
+    }
+}
+
+func int main() {
+    printi(recursive_gcd(823, 4115));
+    printi(recursive_gcd(98, 56));
+    return 0;
+}
