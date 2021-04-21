@@ -1,0 +1,14 @@
+func int gcd(int x, int y) {
+  while (x > 0) {
+    int a = x % y;
+    x = y;
+    y = c;
+  }
+  return y;
+}
+
+func int main() {
+  printi(gcd(823, 4115));
+  printi(gcd(98, 56));
+  return 0;
+}
