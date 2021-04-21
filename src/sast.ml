@@ -2,10 +2,6 @@
 
 open Ast
 
-type sdec = 
-    SDecorator of string * int * string
-  | SNoDecorator
-
 type sexpr = typ * sx
 and sx =
     SLitBool of bool 
@@ -14,7 +10,6 @@ and sx =
   | SLitRhythm of string 
   | SLitNote of int * string
   | SLitArray of sexpr list 
-  | SLitMap of (sexpr * sexpr) list
   | SId of string
   | SBinop of sexpr * op * sexpr
   | SUniop of uop * sexpr
@@ -31,7 +26,6 @@ type sstmt =
   | SWhile of sexpr * sstmt 
 
 type sfunc_decl = {
-    sfdec : sdec;
     sftype : typ;
     sfname : string;
     sparams : bind list;
@@ -52,7 +46,6 @@ let rec string_of_sexpr (t, e) =
   | SLitRhythm(r) -> r
   | SLitNote(i, r) -> "<" ^ string_of_int i ^ " " ^ r ^ ">"
   | SLitArray(el) -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
-  | SLitMap(ml) -> "{" ^ String.concat ", " (List.map (fun (e1, e2) -> string_of_sexpr e1 ^ ": " ^ string_of_sexpr e2) ml) ^ "}"
   | SId(s) -> s
   | SBinop(e1, o, e2) ->
       string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
@@ -75,14 +68,7 @@ let rec string_of_sstmt = function
       "for " ^ string_of_sexpr e1  ^ " in " ^ string_of_sexpr e2 ^ string_of_sstmt s
   | SWhile(e, s) -> "while " ^ string_of_sexpr e ^ string_of_sstmt s
 
-let string_of_sdec = function
-  SDecorator(k, i, s) ->  "% (" ^ k ^ ", " ^
-    string_of_int i ^ ", " ^
-    s ^ ")\n"
-| SNoDecorator -> ""
-
 let string_of_sfdecl fdecl =
-  string_of_sdec fdecl.sfdec ^
   string_of_typ fdecl.sftype ^ " " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sparams) ^
   ")\n{\n" ^

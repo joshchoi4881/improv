@@ -1,19 +1,15 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
-type op = Add | Sub | Mul | Div |
+type op = Add | Sub | Mul | Div | Mod |
           Eq | Neq | Lt | Lte | And | Or |
           Concat | Bind | Dup
 
 type uop = Not
 
 type typ = Bool | Int | String | Note | Tone | Rhythm | None |
-           Array of typ | Map of typ * typ
+           Array of typ 
 
 type bind = typ * string
-
-type dec = 
-    Decorator of string * int * string
-  | NoDecorator
 
 type expr =
     LitBool of bool 
@@ -22,7 +18,6 @@ type expr =
   | LitRhythm of string 
   | LitNote of int * string
   | LitArray of expr list 
-  | LitMap of (expr * expr) list
   | Id of string
   | Binop of expr * op * expr
   | Uniop of uop * expr
@@ -39,13 +34,12 @@ type stmt =
   | While of expr * stmt 
 
 type func_decl = {
-    fdec : dec;
     ftype : typ;
     fname : string;
     params : bind list;
     vars : bind list;
     body : stmt list;
-  }
+}
 
 type program = bind list * func_decl list
 
@@ -56,6 +50,7 @@ let string_of_op = function
   | Sub -> "-"
   | Mul -> "*"
   | Div -> "/"
+  | Mod -> "%"
   | Eq -> "=="
   | Neq -> "!="
   | Lt -> "<"
@@ -78,7 +73,6 @@ let rec string_of_expr = function
   | LitRhythm(r) -> r
   | LitNote(i, r) -> "<" ^ string_of_int i ^ " " ^ r ^ ">"
   | LitArray(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
-  | LitMap(ml) -> "{" ^ String.concat ", " (List.map (fun (e1, e2) -> string_of_expr e1 ^ ": " ^ string_of_expr e2) ml) ^ "}"
   | Id(s) -> s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
@@ -109,18 +103,10 @@ let rec string_of_typ = function
   | Rhythm -> "rhythm"
   | None -> "none"
   | Array(t) -> string_of_typ t ^ "[]"
-  | Map(t1, t2) -> "map <" ^ string_of_typ t1 ^ ", " ^ string_of_typ t2 ^ ">"
-
-let string_of_dec = function
-    Decorator(k, i, s) ->  "% (" ^ k ^ ", " ^
-      string_of_int i ^ ", " ^
-      s ^ ")\n"
-  | NoDecorator -> ""
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
 let string_of_fdecl fdecl =
-  string_of_dec fdecl.fdec ^
   string_of_typ fdecl.ftype ^ " " ^
   fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.params) ^
   ")\n{\n" ^
