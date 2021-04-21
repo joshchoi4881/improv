@@ -4,15 +4,15 @@
 
 %token ASSIGN
 %token LPAREN RPAREN LBRACK RBRACK LCURLY RCURLY
-%token COMMA COLON DECORATOR
+%token COMMA  
 
-%token PLUS MINUS TIMES DIVIDE
+%token PLUS MINUS TIMES DIVIDE MOD
 %token CONCAT BIND DUP
 %token EQ NEQ LT LTE GT GTE 
 %token AND OR NOT 
 
 %token NOTE TONE RHYTHM
-%token INT BOOL STRING MAP NONE 
+%token INT BOOL STRING NONE 
 
 %token FUNC IN IF ELSE FOR WHILE RETURN
 
@@ -28,7 +28,6 @@
 %nonassoc ELSE 
 %left SEP 
 %nonassoc ASSIGN 
-%nonassoc COLON
 
 %left OR 
 %left AND 
@@ -39,7 +38,7 @@
 %nonassoc DUP
 %left COMMA 
 %left PLUS MINUS
-%left TIMES DIVIDE 
+%left TIMES DIVIDE MOD
 
 %nonassoc NOT
 
@@ -57,17 +56,12 @@ decls:
  | decls fdecl { (fst $1, ($2 :: snd $1)) }
 
 fdecl:
-  | dec FUNC typ ID LPAREN params_opt RPAREN LCURLY vdecl_list stmt_list RCURLY 
-    { { fdec = $1;
-        ftype = $3;
-        fname = $4;
-        params = List.rev $6;
-        vars = List.rev $9;
-        body = List.rev $10 } }
-
-dec:
-  | /* nothing */ { NoDecorator }
-  | DECORATOR LPAREN LIT_KEY COMMA LIT_INT COMMA LIT_STYLE RPAREN { Decorator($3, $5, $7) }
+  | FUNC typ ID LPAREN params_opt RPAREN LCURLY vdecl_list stmt_list RCURLY 
+    { { ftype = $2;
+        fname = $3;
+        params = List.rev $5;
+        vars = List.rev $8;
+        body = List.rev $9 } }
 
 params_opt:
   | /* nothing */ { [] }
@@ -86,7 +80,6 @@ typ:
   | RHYTHM  { Rhythm }
   | NONE    { None }
   | typ LBRACK RBRACK { Array($1) }
-  | MAP LT typ COMMA typ GT { Map($3, $5) }
 
 vdecl_list:
   | /* nothing */ { [] }
@@ -115,7 +108,6 @@ expr_opt:
 expr:
   /* literals */
   | literals { $1 }
-  | lit_map { $1 }
   | ID { Id($1) }
 
   /* arithmetic operations */
@@ -123,6 +115,7 @@ expr:
   | expr MINUS  expr { Binop($1, Sub, $3) }
   | expr TIMES  expr { Binop($1, Mul, $3) }
   | expr DIVIDE expr { Binop($1, Div, $3) }
+  | expr MOD expr    { Binop($1, Mod, $3) }
 
   /* boolean operations */
   | expr EQ  expr { Binop($1, Eq,  $3) }
@@ -173,10 +166,3 @@ items_list:
   | expr             { [$1] }
   | items_list COMMA expr { $3 :: $1 }
 
-lit_map:
-  | LCURLY map_list RCURLY { LitMap($2) }
-
-map_list:
-  |                                 { [] }
-  | expr COLON expr                 { [($1, $3)] }
-  | map_list COMMA expr COLON expr  { ($3, $5) :: $1 } 

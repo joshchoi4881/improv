@@ -22,6 +22,7 @@ rule token = parse
 | '-' { MINUS }
 | '*' { TIMES }
 | '/' { DIVIDE }
+| '%' { MOD }
 | '=' { ASSIGN }
 | "==" { EQ }
 | "!=" { NEQ }
@@ -33,8 +34,6 @@ rule token = parse
 | '$' { CONCAT }
 | '@' { BIND }
 | '^' { DUP }
-| ':' { COLON }
-| '%' { DECORATOR }
 (* KEYWORDS *)
 (* DATA TYPES *)
 | "note" { NOTE }
@@ -43,7 +42,6 @@ rule token = parse
 | "int" { INT }
 | "bool" { BOOL }
 | "string" { STRING }
-| "map" { MAP }
 | "none" { NONE }
 (* BOOLEAN LOGIC *)
 | "and" { AND }
