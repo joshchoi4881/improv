@@ -23,7 +23,8 @@ scanner.native : scanner.mll
 # "make clean" removes all generated files
 .PHONY : clean
 clean :
-	rm -f scanner.native
+	rm -f improv.native
+	rm -f hello.lli
 	rm -rf _build
 
 .PHONY : all
