@@ -160,7 +160,9 @@ let translate (globals, functions) =
 	    A.Neg when t = A.Float -> L.build_fneg 
 	  | A.Neg                  -> L.build_neg
           | A.Not                  -> L.build_not) e' "tmp" builder *)
-      | SCall ("print", [e])
+      | SCall ("print", [e]) -> 
+      L.build_call printf_func [| int_format_str ; (expr builder e) |]
+        "printf" builder
       | SCall ("printb", [e]) ->
 	  L.build_call printf_func [| int_format_str ; (expr builder e) |]
 	    "printf" builder
