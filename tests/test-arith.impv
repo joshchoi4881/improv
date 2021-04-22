@@ -1,0 +1,28 @@
+func int add(int x, int y) {
+  return x + y;
+}
+
+func int sub(int x, int y) {
+  return x - y;
+}
+
+func int mul(int x, int y) {
+  return x * y;
+}
+
+func int div(int x, int y) {
+  return x / y;
+}
+
+func int mod(int x, int y) {
+  return x % y;
+}
+
+func int main() {
+  printi(add(4115, 42));
+  printi(sub(4115, 42));
+  printi(mul(4115, 42));
+  printi(div(4115, 42));
+  printi(mod(4115, 42));
+  return 0;
+}

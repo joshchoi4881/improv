@@ -15,8 +15,9 @@ type expr =
     LitBool of bool 
   | LitInt of int 
   | LitString of string
+  | LitTone of int
   | LitRhythm of string 
-  | LitNote of int * string
+  | LitNote of expr * expr (* LitTone, LitRhythm *)
   | LitArray of expr list 
   | Id of string
   | Binop of expr * op * expr
@@ -70,8 +71,9 @@ let rec string_of_expr = function
   | LitBool(false) -> "false"
   | LitInt(i) -> string_of_int i
   | LitString(s) -> s
+  | LitTone(t) -> string_of_int t
   | LitRhythm(r) -> r
-  | LitNote(i, r) -> "<" ^ string_of_int i ^ " " ^ r ^ ">"
+  | LitNote(t, r) -> "<" ^ string_of_expr t ^ " " ^ string_of_expr r ^ ">"
   | LitArray(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
   | Id(s) -> s
   | Binop(e1, o, e2) ->

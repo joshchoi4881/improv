@@ -151,12 +151,13 @@ literals:
   | LIT_BOOL         { LitBool($1) }
   | LIT_INT          { LitInt($1) }
   | LIT_STRING       { LitString($1) }
+  | LIT_TONE         { LitTone($1) }
   | LIT_RHYTHM       { LitRhythm($1) }
   | lit_note         { $1 }
   | lit_array        { $1 }
 
 lit_note:
-  | LT LIT_INT COMMA LIT_RHYTHM GT  { LitNote($2, $4) }
+  | LT LIT_TONE COMMA LIT_RHYTHM GT  { LitNote($2, $4) }
 
 lit_array:
   | LBRACK items_list RBRACK { LitArray($2) }

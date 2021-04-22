@@ -86,12 +86,53 @@ let check (globals, functions) =
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
 
+    (* Raise exception if given tone is not valid (only 1-6) *)
+    let check_tone t = 
+      if t >= 1 && t <= 6 then (Tone, SLitTone t) 
+      else raise (Failure ("invalid tone assignment, must be within 1-6"))
+    in 
+
+    (* Raise exception if given rhythm is not valid *)
+    let check_rhythm r = 
+      if r == "wh" || r == "hf" || r == "qr" || r == "ei" || r == "sx" then (Rhythm, SLitRhythm r)
+      else raise (Failure ("invalid rhythm assignment"))
+
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec expr = function
         LitInt  l -> (Int, SLitInt l)
       | LitString l -> (String, SLitString l)
-      (* | Fliteral l -> (Float, SFliteral l) *)
       | LitBool l  -> (Bool, SLitBool l)
+      (* check tone is between certain numbers *)
+      | LitTone t -> check_tone t
+      | LitRhythm r -> check_rhythm r
+ (**   | LitNote (t, r) -> 
+        ((Int, SLitInt t), (String, SLitRhythm r)) *)
+
+      (* check the rhythm is *)      
+
+      (* IMPLEMENT ARRAYS 
+
+      |   ListLit l -> let eval_list = List.map (expr scope deepscope) l in 
+                 let rec check_types = function
+                    (t1, _) :: [] -> (Array(t1), SListLiteral(eval_list))
+                  |	((t1,_) :: (t2,_) :: _) when t1 != t2 ->
+	                raise (Failure "List types are inconsistent")
+                  | _ :: t -> check_types t
+                  | [] -> raise (Failure "listlit became empty") 
+                  in check_types eval_list 
+            
+
+      | ArrayLit(l) -> let first_type = expr (List.hd l) in
+      let _ = (match first_type with
+                  Simple _ -> ()
+                | _ -> raise (Failure ("'" ^ string_of_expr (List.hd l) ^ "' is not simple and is in array"))
+              ) in
+      let _ = List.iter (fun x -> if string_of_typ(expr x) == string_of_typ first_type then ()
+                                  else raise (Failure ("'" ^ string_of_expr x ^ "' doesn't match array's type"))) l in
+      Array((match first_type with Simple(x) -> x
+              | _ -> raise(Failure("not array type"))), 1)  
+*)
+
       | NoExpr     -> (None, SNoExpr)
       | Id s       -> (type_of_identifier s, SId s)
       | Assign(var, e) as ex -> 
@@ -116,8 +157,7 @@ let check (globals, functions) =
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
           let ty = match op with
-            Add | Sub | Mul | Div when same && t1 = Int   -> Int
-          (* | Add | Sub | Mul | Div when same && t1 = Float -> Float *)
+            Add | Sub | Mul | Div | Mod when same && t1 = Int  -> Int
           | Eq | Neq            when same               -> Bool
           | Lt | Lte
                      when same && (t1 = Int) -> Bool

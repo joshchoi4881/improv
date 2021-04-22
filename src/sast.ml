@@ -7,8 +7,9 @@ and sx =
     SLitBool of bool 
   | SLitInt of int 
   | SLitString of string
+  | SLitTone of int 
   | SLitRhythm of string 
-  | SLitNote of int * string
+  | SLitNote of expr * expr 
   | SLitArray of sexpr list 
   | SId of string
   | SBinop of sexpr * op * sexpr
@@ -43,8 +44,9 @@ let rec string_of_sexpr (t, e) =
   | SLitBool(false) -> "false"
   | SLitInt(i) -> string_of_int i
   | SLitString(s) -> s
+  | SLitTone(t) -> string_of_int t
   | SLitRhythm(r) -> r
-  | SLitNote(i, r) -> "<" ^ string_of_int i ^ " " ^ r ^ ">"
+  | SLitNote(t, r) -> "<" ^ string_of_expr t ^ " " ^ string_of_expr r ^ ">"
   | SLitArray(el) -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
   | SId(s) -> s
   | SBinop(e1, o, e2) ->
