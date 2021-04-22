@@ -34,10 +34,14 @@ let translate (globals, functions) =
   and void_t     = L.void_type   context in
 
   (* Return the LLVM type for an Improv type *)
-  let ltype_of_typ = function
-      A.Int   -> i32_t
-    | A.String   -> string_t
+  let rec ltype_of_typ = function
+      A.Int  -> i32_t
+    | A.String  -> string_t
     | A.Bool  -> i1_t
+    | A.Tone  -> i32_t
+    | A.Rhythm  -> string_t
+    | A.Note  -> L.struct_type context [| i32_t ; string_t |]
+    (* | A.Array(t)  -> L.struct_type context [| i32_t ; L.pointer_type (ltype_of_typ t) |]  *)
     | A.None  -> void_t
   in
 
@@ -101,12 +105,49 @@ let translate (globals, functions) =
     let lookup n = try StringMap.find n local_vars
                    with Not_found -> StringMap.find n global_vars
     in
+(* 
+    let make_array element_t len builder =
+      let element_sz = L.build_bitcast (L.size_of element_t) i32_t "b" builder in
+      let body_sz = L.build_mul element_sz len "body_sz" builder in
+      let malloc_sz = L.build_add body_sz metadata_sz "make_array_sz" builder in
+      let meta_ptr = L.build_array_malloc i8_t malloc_sz "make_array" builder in
+      let body_ptr = meta_to_body meta_ptr builder in
+      ignore (put_meta body_ptr elem_size_offset element_sz builder);
+      ignore (put_meta body_ptr size_offset malloc_sz builder);
+      ignore (put_meta body_ptr len_offset len builder);
+      L.build_bitcast body_ptr (L.pointer_type element_t) "make_array_ptr" builder
+    in *)
 
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
 	      SLitInt i -> L.const_int i32_t i
       | SLitString s -> L.build_global_stringptr s "str" builder
       | SLitBool b  -> L.const_int i1_t (if b then 1 else 0)
+      | SLitTone i -> L.const_int i32_t i
+      | SLitRhythm s -> L.build_global_stringptr s "str" builder
+      | SLitNote (i, s) -> L.const_struct context [| L.const_int i32_t i ; L.build_global_stringptr s "str" builder |]
+      (* | SLitArray el ->  *)
+        
+        (* let arr_ptr = expr builder (A.MakeArray(L.type_of el,
+                A.LitInt(List.length el))) in
+                List.iteri (fun idx e ->  (* TODO: need to make this work with struct literals *)
+                let arr_gep = L.build_in_bounds_gep arr_ptr [| L.const_int i32_t (idx) |] "array_lit" builder in
+                let assign_val = expr builder e in
+                ignore (L.build_store assign_val arr_gep builder)
+                ) el;
+                arr_ptr
+         *)
+        
+        (* let len = L.const_int i32_t (List.length el) in
+                        let elems = List.rev (List.map (expr builder) (List.rev el)) in
+                        let array_mem = L.build_array_malloc (L.type_of (List.hd elems)) size "tmp" builder in
+                        let array = L.build_gep ()
+        
+        let llargs = List.rev (List.map (expr builder) (List.rev args)) in
+                        let result = (match fdecl.sftype with 
+                          A.None -> ""
+                        | _ -> f ^ "_result") in
+                        L.build_call fdef (Array.of_list llargs) result builder *)
       | SNoExpr     -> L.const_int i32_t 0
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in
