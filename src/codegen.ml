@@ -30,7 +30,6 @@ let translate (globals, functions) =
   let i32_t      = L.i32_type    context
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
-  (* and float_t    = L.double_type context *)
   and string_t   = L.pointer_type (L.i8_type context)
   and void_t     = L.void_type   context in
 
@@ -39,7 +38,6 @@ let translate (globals, functions) =
       A.Int   -> i32_t
     | A.String   -> string_t
     | A.Bool  -> i1_t
-    (* | A.Float -> float_t *)
     | A.None  -> void_t
   in
 
@@ -47,7 +45,7 @@ let translate (globals, functions) =
   let global_vars : L.llvalue StringMap.t =
     let global_var m (t, n) = 
       let init = match t with
-          (* A.Float -> L.const_float (ltype_of_typ t) 0.0 *)
+          A.String -> L.const_string context ""
         | _ -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
@@ -56,11 +54,6 @@ let translate (globals, functions) =
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
-
-  (* let prints_t : L.lltype = 
-      L.var_arg_function_type string_t [|L.pointer_type i8_t|] in
-  let prints_func : L.llvalue = 
-      L.declare_function "prints" prints_t the_module in *)
 
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
@@ -79,15 +72,7 @@ let translate (globals, functions) =
     let builder = L.builder_at_end context (L.entry_block the_function) in
 
     let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder
-    (* and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder *)
     and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
-
-    (* let get_format_str params = match params with
-        SLitInt(_) -> int_format_str
-      | SLitString(_) -> string_format_str
-      | SLitBool(_) -> string_format_str
-      (* | _ -> raise (Error "Invalid print") *)
-    in *)
 
     (* Construct the function's "locals": param arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -162,10 +147,6 @@ let translate (globals, functions) =
                           A.None -> ""
                         | _ -> f ^ "_result") in
             L.build_call fdef (Array.of_list llargs) result builder
-      (* and get_print_value b e = match e with
-        SLitBool(litbool) -> let litstring = (SLitString (if litbool then "true" else "false"))
-        in expr b litstring
-        | _ -> expr b e *)
       in
     
     (* LLVM insists each basic block end with exactly one "terminator" 
@@ -232,7 +213,7 @@ let translate (globals, functions) =
     (* Add a return if the last block falls off the end *)
     add_terminal builder (match fdecl.sftype with
         A.None -> L.build_ret_void
-      (* | A.Float -> L.build_ret (L.const_float float_t 0.0) *)
+      | A.String -> L.build_ret (L.const_string context "")
       | t -> L.build_ret (L.const_int (ltype_of_typ t) 0))
   in
 
