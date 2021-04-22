@@ -1,7 +1,10 @@
+int glo;
+
 func int main() {
     int a;
     string b;
     int c;
+    note n;
 
     a = 1 + 2;
     c = 5;
@@ -12,5 +15,23 @@ func int main() {
     b = "hello";
     prints(b);
     prints("Hello World");
+
+    printi(10 % c);
+
+    if a == 3 {
+      prints("true");
+    } else {
+      prints("a is not 3");
+    }
+
+    printi(glo+1);
+
+    n = <1, "wh">;
+
+
+
+
+
+
     return 0;
 }

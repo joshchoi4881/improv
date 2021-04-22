@@ -94,8 +94,8 @@ let check (globals, functions) =
 
     (* Raise exception if given rhythm is not valid *)
     let check_rhythm r = 
-      if r == "wh" || r == "hf" || r == "qr" || r == "ei" || r == "sx" then r
-      else raise (Failure ("invalid rhythm assignment"))
+      if String.equal r "wh" || String.equal r "hf" || String.equal r "qr" || String.equal r "ei" || String.equal r "sx" then r
+      else raise (Failure ("invalid rhythm assignment " ^ r))
     in
 
     (* Return a semantically-checked expression, i.e., with a type *)
@@ -140,6 +140,8 @@ let check (globals, functions) =
           let ty = match op with
             Add | Sub | Mul | Div | Mod when same && t1 = Int  -> Int
           | Eq | Neq            when same               -> Bool
+          | Concat | Dup when same && t1 = Array(t1) -> Array(t1)
+          | Bind when same && t1 = Array(Note) -> Array(Note)
           | Lt | Lte
                      when same && (t1 = Int) -> Bool
           | And | Or when same && t1 = Bool -> Bool
