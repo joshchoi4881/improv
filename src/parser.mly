@@ -19,9 +19,9 @@
 %token <bool> LIT_BOOL
 %token <int> LIT_INT
 %token <string> LIT_STRING
+/*
 %token <string> LIT_KEY 
-%token <string> LIT_STYLE 
-%token <string> LIT_RHYTHM
+%token <string> LIT_STYLE  */
 %token <string> ID
 
 %nonassoc NOELSE
@@ -151,13 +151,17 @@ literals:
   | LIT_BOOL         { LitBool($1) }
   | LIT_INT          { LitInt($1) }
   | LIT_STRING       { LitString($1) }
-  | LIT_TONE         { LitTone($1) }
-  | LIT_RHYTHM       { LitRhythm($1) }
   | lit_note         { $1 }
   | lit_array        { $1 }
 
+lit_tone:
+  | LIT_INT { LitTone($1) }
+
+lit_rhythm:
+  | LIT_STRING { LitRhythm($1) }
+
 lit_note:
-  | LT LIT_TONE COMMA LIT_RHYTHM GT  { LitNote($2, $4) }
+  | LT LIT_INT COMMA LIT_STRING GT  { LitNote($2, $4) }
 
 lit_array:
   | LBRACK items_list RBRACK { LitArray($2) }

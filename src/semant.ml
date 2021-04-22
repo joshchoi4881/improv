@@ -88,50 +88,36 @@ let check (globals, functions) =
 
     (* Raise exception if given tone is not valid (only 1-6) *)
     let check_tone t = 
-      if t >= 1 && t <= 6 then (Tone, SLitTone t) 
+      if t >= 1 && t <= 6 then t
       else raise (Failure ("invalid tone assignment, must be within 1-6"))
     in 
 
     (* Raise exception if given rhythm is not valid *)
     let check_rhythm r = 
-      if r == "wh" || r == "hf" || r == "qr" || r == "ei" || r == "sx" then (Rhythm, SLitRhythm r)
+      if r == "wh" || r == "hf" || r == "qr" || r == "ei" || r == "sx" then r
       else raise (Failure ("invalid rhythm assignment"))
+    in
 
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec expr = function
         LitInt  l -> (Int, SLitInt l)
       | LitString l -> (String, SLitString l)
       | LitBool l  -> (Bool, SLitBool l)
-      (* check tone is between certain numbers *)
-      | LitTone t -> check_tone t
-      | LitRhythm r -> check_rhythm r
- (**   | LitNote (t, r) -> 
-        ((Int, SLitInt t), (String, SLitRhythm r)) *)
+      | LitTone t -> (Tone, SLitTone (check_tone t))
+      | LitRhythm r -> (Rhythm, SLitRhythm (check_rhythm r))
+      | LitNote (t, r) -> (Note, SLitNote(check_tone t, check_rhythm r)) 
 
-      (* check the rhythm is *)      
+      (*should note be a struct type? *)
 
-      (* IMPLEMENT ARRAYS 
+      (* IMPLEMENT ARRAYS *)
+      | LitArray l -> let array = List.map expr l in
+          let rec type_check = function
+            (t1, _) :: [] -> (Array(t1), SLitArray(array))
+            | ((t1,_) :: (t2,_) :: _) when t1 != t2 ->
+              raise (Failure ("inconsistent array types"))
+            | _ :: t -> type_check t
+            in type_check array
 
-      |   ListLit l -> let eval_list = List.map (expr scope deepscope) l in 
-                 let rec check_types = function
-                    (t1, _) :: [] -> (Array(t1), SListLiteral(eval_list))
-                  |	((t1,_) :: (t2,_) :: _) when t1 != t2 ->
-	                raise (Failure "List types are inconsistent")
-                  | _ :: t -> check_types t
-                  | [] -> raise (Failure "listlit became empty") 
-                  in check_types eval_list 
-            
-
-      | ArrayLit(l) -> let first_type = expr (List.hd l) in
-      let _ = (match first_type with
-                  Simple _ -> ()
-                | _ -> raise (Failure ("'" ^ string_of_expr (List.hd l) ^ "' is not simple and is in array"))
-              ) in
-      let _ = List.iter (fun x -> if string_of_typ(expr x) == string_of_typ first_type then ()
-                                  else raise (Failure ("'" ^ string_of_expr x ^ "' doesn't match array's type"))) l in
-      Array((match first_type with Simple(x) -> x
-              | _ -> raise(Failure("not array type"))), 1)  
-*)
 
       | NoExpr     -> (None, SNoExpr)
       | Id s       -> (type_of_identifier s, SId s)

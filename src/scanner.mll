@@ -56,9 +56,10 @@ rule token = parse
 | "while" { WHILE }
 | "return" { RETURN }
 (* LITERALS *)
+(*
 | ("wh" | "hf" | "qr" | "ei" | "sx") as lit { LIT_RHYTHM(lit) }
 | ("DEFAULT" | "BLUES" | "JAZZ") as lit { LIT_STYLE(lit) }
-| keys ("MAJ" | "MIN") as lit { LIT_KEY(lit) }
+| keys ("MAJ" | "MIN") as lit { LIT_KEY(lit) } *)
 | '"' (('\\' '"'| [^'"'])* as str) '"' { LIT_STRING(str) }
 | ['0'-'9']+ as lit { LIT_INT(int_of_string lit) }
 | "true"   { LIT_BOOL(true)  }
