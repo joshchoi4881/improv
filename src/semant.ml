@@ -106,19 +106,14 @@ let check (globals, functions) =
       | LitTone t -> (Tone, SLitTone (check_tone t))
       | LitRhythm r -> (Rhythm, SLitRhythm (check_rhythm r))
       | LitNote (t, r) -> (Note, SLitNote(check_tone t, check_rhythm r)) 
-
-      (*should note be a struct type? *)
-
-      (* IMPLEMENT ARRAYS *)
       | LitArray l -> let array = List.map expr l in
           let rec type_check = function
             (t1, _) :: [] -> (Array(t1), SLitArray(array))
             | ((t1,_) :: (t2,_) :: _) when t1 != t2 ->
               raise (Failure ("inconsistent array types"))
             | _ :: t -> type_check t
+            | [] -> raise (Failure ("empty array")) 
             in type_check array
-
-
       | NoExpr     -> (None, SNoExpr)
       | Id s       -> (type_of_identifier s, SId s)
       | Assign(var, e) as ex -> 

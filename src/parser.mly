@@ -153,12 +153,12 @@ literals:
   | LIT_STRING       { LitString($1) }
   | lit_note         { $1 }
   | lit_array        { $1 }
-
+/*
 lit_tone:
   | LIT_INT { LitTone($1) }
 
 lit_rhythm:
-  | LIT_STRING { LitRhythm($1) }
+  | LIT_STRING { LitRhythm($1) } */
 
 lit_note:
   | LT LIT_INT COMMA LIT_STRING GT  { LitNote($2, $4) }
