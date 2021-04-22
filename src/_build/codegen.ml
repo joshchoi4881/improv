@@ -122,6 +122,7 @@ let translate (globals, functions) =
 	      SLitInt i -> L.const_int i32_t i
       | SLitString s -> L.build_global_stringptr s "str" builder
       | SLitBool b  -> L.const_int i1_t (if b then 1 else 0)
+      (* | SFliteral l -> L.const_float_of_string float_t l *)
       | SNoExpr     -> L.const_int i32_t 0
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in

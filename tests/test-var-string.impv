@@ -1,0 +1,6 @@
+func int main() {
+  string a;
+  a = "hello";
+  prints(a);
+  return 0;
+}
