@@ -1,5 +1,16 @@
 func int main() {
+    int a;
+    string b;
+    int c;
+
+    a = 1 + 2;
+    c = 5;
+    printi(a);
     printi(2);
+    printi(c);
+
+    b = "hello";
+    prints(b);
     prints("Hello World");
     return 0;
 }

@@ -1,4 +1,4 @@
 func int main() {
-  printi(42);
+  prints("hello world");
   return 0;
 }
