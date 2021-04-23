@@ -232,8 +232,8 @@ let translate (globals, functions) =
         L.builder_at_end context merge_bb
 
       (* Implement for loops as while loops *)
-      | SFor (e1, e2, body) -> stmt builder
-	      ( SBlock [SExpr e1 ; SWhile (e2, body) ] )
+      | SFor (e1, e2, e3, body) -> stmt builder
+	      ( SBlock [SExpr e1 ; SWhile (e2, SBlock [body ; SExpr e3]) ] )
     in
 
     (* Build the code for each statement in the function *)

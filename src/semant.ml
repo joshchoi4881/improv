@@ -177,8 +177,8 @@ let check (globals, functions) =
     let rec check_stmt = function
         Expr e -> SExpr (expr e) (*check the expr semantically woo*)
       | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
-      | For(e1, e2, st) ->
-	        SFor(expr e1, expr e2, check_stmt st)
+      | For(e1, e2, e3, st) ->
+	        SFor(expr e1, expr e2, expr e3, check_stmt st)
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
       | Return e -> let (t, e') = expr e in
         if t = func.ftype then SReturn (t, e') 

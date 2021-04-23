@@ -98,7 +98,8 @@ stmt:
   | LCURLY stmt_list RCURLY               { Block(List.rev $2)    }
   | IF expr stmt %prec NOELSE             { If($2, $3, Block([])) }
   | IF expr stmt ELSE stmt                { If($2, $3, $5)        }
-  | FOR expr IN expr stmt                 { For($2, $4, $5)       }
+  | FOR expr SEP expr SEP expr stmt                 
+                                          { For($2, $4, $6, $7) }
   | WHILE expr stmt                       { While($2, $3)         }
 
 expr_opt:
