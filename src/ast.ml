@@ -25,7 +25,7 @@ type expr =
   | Assign of string * expr
   | Call of string * expr list
   | ArrayAccess of string * expr
-  (* | ArrayAssign of string * expr * expr *)
+  | ArrayAssign of string * expr * expr
   | NoExpr
 
 type stmt =
@@ -85,7 +85,7 @@ let rec string_of_expr = function
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
-  (* | ArrayAssign(v, l, e) -> v ^ "[" ^ string_of_expr l ^ "]" ^ " = " ^ string_of_expr e *)
+  | ArrayAssign(v, l, e) -> v ^ "[" ^ string_of_expr l ^ "]" ^ " = " ^ string_of_expr e
   | NoExpr -> ""
 
 let rec string_of_stmt = function
@@ -97,12 +97,8 @@ let rec string_of_stmt = function
   | If(e, s1, s2) ->  "if " ^ string_of_expr e ^ "\n" ^
       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | For(e1, e2, e3, s) ->
-<<<<<<< HEAD
     "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
     string_of_expr e3  ^ ") " ^ string_of_stmt s
-=======
-      "for " ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^ string_of_expr e3 ^ string_of_stmt s 
->>>>>>> c74635bee72c16744249edde9313e875c20c5dbe
   | While(e, s) -> "while " ^ string_of_expr e ^ string_of_stmt s 
 
 let rec string_of_typ = function

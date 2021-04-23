@@ -136,12 +136,10 @@ let check (globals, functions) =
             | _ :: t -> type_check t
             | [] -> raise (Failure ("empty array")) 
             in type_check array
-      | ArrayAccess (a, _) ->
-        let t = type_of_identifier a in
+      | ArrayAccess (a, i) -> (Int, SLitInt 10)
+        (* let t = type_of_identifier a in
         if match_array t then () else raise (Failure (a ^ " is not an array"))
-        get_array_type t
-
-
+        get_array_type t *)
 
         (* let s' = (lookup s) in
         let e' = expr e in
@@ -159,7 +157,8 @@ let check (globals, functions) =
 
       Type of array access = type of elements of array
       *)
-                      
+                    
+      | ArrayAssign(v, i, e) -> (Int, SLitInt 11)
       (* | ArrayAssign(v, i, e) as ex -> let type_of_left_side = 
         if string_of_typ(expr (List.hd i)) != string_of_typ(Int)
         then raise ( Failure("Array index ('" ^ string_of_expr (List.hd i) ^ "') is not an integer") )
@@ -237,11 +236,7 @@ let check (globals, functions) =
         Expr e -> SExpr (expr e) (*check the expr semantically woo*)
       | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | For(e1, e2, e3, st) ->
-<<<<<<< HEAD
           SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
-=======
-	        SFor(expr e1, expr e2, expr e3, check_stmt st)
->>>>>>> c74635bee72c16744249edde9313e875c20c5dbe
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
       | Return e -> let (t, e') = expr e in
         if t = func.ftype then SReturn (t, e') 
