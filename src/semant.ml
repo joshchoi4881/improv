@@ -110,7 +110,7 @@ let check (globals, functions) =
           let rec type_check = function
             (t1, _) :: [] -> (Array(t1), SLitArray(array))
             | ((t1,_) :: (t2,_) :: _) when t1 != t2 ->
-              raise (Failure ("inconsistent array types"))
+              raise (Failure ("inconsistent array types, expected " ^ string_of_typ t1 ^ " but found " ^ string_of_typ t2))
             | _ :: t -> type_check t
             | [] -> raise (Failure ("empty array")) 
             in type_check array
