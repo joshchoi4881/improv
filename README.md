@@ -7,4 +7,4 @@
 ## testing
 
 to run all tests: 
-
+$ ./testall.sh

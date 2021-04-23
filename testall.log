@@ -45,8 +45,8 @@ diff -b test-gcd-recursive.out tests/test-gcd-recursive.out > test-gcd-recursive
 llc -relocation-model=pic test-gcd.ll > test-gcd.s
 cc -o test-gcd.exe test-gcd.s
 ./test-gcd.exe
-Floating point exception
-###### FAILED
+diff -b test-gcd.out tests/test-gcd.out > test-gcd.diff
+###### SUCCESS
 
 ###### Testing test-if
 ./src/improv.native tests/test-if.impv > test-if.ll
