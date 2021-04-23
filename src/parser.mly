@@ -98,7 +98,7 @@ stmt:
   | LCURLY stmt_list RCURLY               { Block(List.rev $2)    }
   | IF LPAREN expr RPAREN stmt %prec NOELSE  { If($3, $5, Block([])) }
   | IF LPAREN expr RPAREN stmt ELSE stmt                { If($3, $5, $7)        }
-  | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
+  | FOR LPAREN expr_opt SEP expr SEP expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt                       { While($3, $5)         }
 
@@ -142,7 +142,7 @@ expr:
 
   /* array access & assign */
   | ID LBRACK expr RBRACK { ArrayAccess($1, $3) }
-  // | ID LBRACK expr RBRACK ASSIGN expr { ArrayAssign($1, $3, $6) }
+  | ID LBRACK expr RBRACK ASSIGN expr { ArrayAssign($1, $3, $6) }
 
 args_opt:
   | /* nothing */ { [] }

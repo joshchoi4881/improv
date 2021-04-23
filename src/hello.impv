@@ -35,11 +35,11 @@ func int main() {
     int_arr = [1, 2];
     note_arr = [<1, "wh">, <5, "wh">];
 
-    for i = 0; i < 5; i = i + 1 {
+    for (i = 0; i < 5; i = i + 1) {
       printi(i);
     }
 
-    while i < 10 {
+    while (i < 10) {
       prints("while loop");
       i = 20;
     }
