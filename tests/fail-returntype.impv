@@ -1,0 +1,3 @@
+func note[] main() {
+  return 0;
+}
