@@ -1,8 +1,8 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mul | Div | Mod |
-          Eq | Neq | Lt | Lte | And | Or |
-          Concat | Bind | Dup
+          Eq | Neq | Lt | Lte | And | Or
+          (* | Concat | Bind | Dup *)
 
 type uop = Not
 
@@ -24,6 +24,8 @@ type expr =
   | Uniop of uop * expr
   | Assign of string * expr
   | Call of string * expr list
+  | ArrayAccess of string * expr
+  (* | ArrayAssign of string * expr * expr *)
   | NoExpr
 
 type stmt =
@@ -31,7 +33,7 @@ type stmt =
   | Expr of expr
   | Return of expr
   | If of expr * stmt * stmt
-  | For of expr * expr * stmt
+  | For of expr * expr * expr * stmt
   | While of expr * stmt 
 
 type func_decl = {
@@ -58,9 +60,9 @@ let string_of_op = function
   | Lte -> "<="
   | And -> "&&"
   | Or -> "||"
-  | Concat -> "$"
+  (* | Concat -> "$"
   | Bind -> "@"
-  | Dup -> "^"
+  | Dup -> "^" *)
 
 let string_of_uop = function
     Not -> "!"
@@ -82,6 +84,8 @@ let rec string_of_expr = function
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+  | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
+  (* | ArrayAssign(v, l, e) -> v ^ "[" ^ string_of_expr l ^ "]" ^ " = " ^ string_of_expr e *)
   | NoExpr -> ""
 
 let rec string_of_stmt = function
@@ -92,8 +96,9 @@ let rec string_of_stmt = function
   | If(e, s, Block([])) -> "if " ^ string_of_expr e ^ "\n" ^ string_of_stmt s
   | If(e, s1, s2) ->  "if " ^ string_of_expr e ^ "\n" ^
       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-  | For(e1, e2, s) ->
-      "for " ^ string_of_expr e1  ^ " in " ^ string_of_expr e2 ^ string_of_stmt s
+  | For(e1, e2, e3, s) ->
+    "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
+    string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while " ^ string_of_expr e ^ string_of_stmt s 
 
 let rec string_of_typ = function

@@ -98,6 +98,28 @@ let check (globals, functions) =
       else raise (Failure ("invalid rhythm assignment " ^ r))
     in
 
+    (* let check_type lvaluet rvaluet err =
+      if (String.compare (string_of_typ lvaluet) (string_of_typ rvaluet)) == 0 then lvaluet else raise err
+   in
+
+    let var_symbols = List.fold_left (fun m (t, n) -> StringMap.add n t m) 
+       StringMap.empty func.params in *)
+
+    (* let array_access_type = function
+      Array(t) -> t
+      | _ -> raise(Failure("Can only access a[x] from an array a")) 
+    in *)
+
+    let match_array = function
+        Array(_) -> true
+      | _ -> false
+    in
+
+    let get_array_type = function
+        Array(t) -> t
+      | _ -> raise (Failure "invalid array type")
+    in
+
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec expr = function
         LitInt  l -> (Int, SLitInt l)
@@ -114,6 +136,43 @@ let check (globals, functions) =
             | _ :: t -> type_check t
             | [] -> raise (Failure ("empty array")) 
             in type_check array
+      | ArrayAccess (a, _) ->
+        let t = type_of_identifier a in
+        if match_array t then () else raise (Failure (a ^ " is not an array"))
+        get_array_type t
+
+
+
+        (* let s' = (lookup s) in
+        let e' = expr e in
+        let _ = (match (expr e) with
+                                  (Int, e) -> (Int, e)
+                                  | _ -> raise (Failure ("attempting to access with a non integer type"))) in
+                        array_access_type (type_of_identifier s) *)
+
+      (* ArrayAccess 
+      Return string & semantically checked sexpr
+      (string, sexpr)
+
+      Check s is an array
+      e is an integer
+
+      Type of array access = type of elements of array
+      *)
+                      
+      (* | ArrayAssign(v, i, e) as ex -> let type_of_left_side = 
+        if string_of_typ(expr (List.hd i)) != string_of_typ(Int)
+        then raise ( Failure("Array index ('" ^ string_of_expr (List.hd i) ^ "') is not an integer") )
+        else 
+          let type_of_entity = type_of_identifier v in
+          (match type_of_entity with
+              Array(d, _) -> d
+            | _ -> raise (Failure ("Entity being indexed ('" ^ v ^"') cannot be array"))) in
+        let type_of_right_side = expr e in
+        check_type type_of_left_side type_of_right_side 
+        (Failure ("illegal assignment " ^ string_of_typ type_of_left_side ^
+                  " = " ^ string_of_typ type_of_right_side ^ " in " ^ 
+                  string_of_expr ex)) *)
       | NoExpr     -> (None, SNoExpr)
       | Id s       -> (type_of_identifier s, SId s)
       | Assign(var, e) as ex -> 
@@ -140,8 +199,8 @@ let check (globals, functions) =
           let ty = match op with
             Add | Sub | Mul | Div | Mod when same && t1 = Int  -> Int
           | Eq | Neq            when same               -> Bool
-          | Concat | Dup when same && t1 = Array(t1) -> Array(t1)
-          | Bind when same && t1 = Array(Note) -> Array(Note)
+          (* | Concat | Dup when same && t1 = Array(t1) -> Array(t1) *)
+          (* | Bind when same && t1 = Array(Note) -> Array(Note) *)
           | Lt | Lte
                      when same && (t1 = Int) -> Bool
           | And | Or when same && t1 = Bool -> Bool
@@ -164,7 +223,7 @@ let check (globals, functions) =
           in 
           let args' = List.map2 check_call fd.params args
           in (fd.ftype, SCall(fname, args'))
-      | _ -> (None, SNoExpr)
+      (* | _ -> (None, SNoExpr) *)
     in
 
     let check_bool_expr e = 
@@ -177,8 +236,8 @@ let check (globals, functions) =
     let rec check_stmt = function
         Expr e -> SExpr (expr e) (*check the expr semantically woo*)
       | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
-      | For(e1, e2, st) ->
-	        SFor(expr e1, expr e2, check_stmt st)
+      | For(e1, e2, e3, st) ->
+          SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
       | Return e -> let (t, e') = expr e in
         if t = func.ftype then SReturn (t, e') 
@@ -196,7 +255,7 @@ let check (globals, functions) =
             | s :: ss         -> check_stmt s :: check_stmt_list ss
             | []              -> []
           in SBlock(check_stmt_list sl)
-      |  _  -> raise (Failure "this statement is undefined")
+      (* |  _  -> raise (Failure "this statement is undefined") *)
 
     in (* body of check_function *)
     { sftype = func.ftype;

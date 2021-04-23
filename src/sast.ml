@@ -16,6 +16,8 @@ and sx =
   | SUniop of uop * sexpr
   | SAssign of string * sexpr
   | SCall of string * sexpr list
+  | SArrayAccess of string * sexpr
+  (* | SArrayAssign of string * sexpr * sexpr *)
   | SNoExpr
 
 type sstmt =
@@ -23,7 +25,7 @@ type sstmt =
   | SExpr of sexpr
   | SReturn of sexpr
   | SIf of sexpr * sstmt * sstmt
-  | SFor of sexpr * sexpr * sstmt
+  | SFor of sexpr * sexpr * sexpr * sstmt
   | SWhile of sexpr * sstmt 
 
 type sfunc_decl = {
@@ -55,6 +57,8 @@ let rec string_of_sexpr (t, e) =
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
+  | SArrayAccess(s, e) -> s ^ "[" ^ string_of_sexpr e ^ "]"
+  (* | SArrayAssign(v, l, e) -> v ^ "[" ^ string_of_sexpr l ^ "]" ^ " = " ^ string_of_sexpr e *)
   | SNoExpr -> ""
 				  ) ^ ")"				     
 
@@ -66,8 +70,9 @@ let rec string_of_sstmt = function
   | SIf(e, s, SBlock([])) -> "if " ^ string_of_sexpr e ^ "\n" ^ string_of_sstmt s
   | SIf(e, s1, s2) ->  "if " ^ string_of_sexpr e ^ "\n" ^
       string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
-  | SFor(e1, e2, s) ->
-      "for " ^ string_of_sexpr e1  ^ " in " ^ string_of_sexpr e2 ^ string_of_sstmt s
+  | SFor(e1, e2, e3, s) ->
+      "for (" ^ string_of_sexpr e1  ^ " ; " ^ string_of_sexpr e2 ^ " ; " ^
+      string_of_sexpr e3  ^ ") " ^ string_of_sstmt s
   | SWhile(e, s) -> "while " ^ string_of_sexpr e ^ string_of_sstmt s
 
 let string_of_sfdecl fdecl =

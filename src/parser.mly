@@ -96,10 +96,11 @@ stmt:
   | expr SEP                              { Expr $1               }
   | RETURN expr_opt SEP                   { Return $2             }
   | LCURLY stmt_list RCURLY               { Block(List.rev $2)    }
-  | IF expr stmt %prec NOELSE             { If($2, $3, Block([])) }
-  | IF expr stmt ELSE stmt                { If($2, $3, $5)        }
-  | FOR expr IN expr stmt                 { For($2, $4, $5)       }
-  | WHILE expr stmt                       { While($2, $3)         }
+  | IF LPAREN expr RPAREN stmt %prec NOELSE  { If($3, $5, Block([])) }
+  | IF LPAREN expr RPAREN stmt ELSE stmt                { If($3, $5, $7)        }
+  | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
+                                            { For($3, $5, $7, $9)   }
+  | WHILE LPAREN expr RPAREN stmt                       { While($3, $5)         }
 
 expr_opt:
   | /* nothing */ { NoExpr }
@@ -129,15 +130,19 @@ expr:
   | expr OR  expr { Binop($1, Or,  $3) }
 
   /* music list operations */
-  | lit_array CONCAT lit_array { Binop($1, Concat, $3) }
-  | lit_array BIND lit_array { Binop($1, Bind, $3) } /* notes, tones, rhythms */
-  | expr DUP expr { Binop($1, Dup, $3) } /* LIT_INT */
+  // | lit_array CONCAT lit_array { Binop($1, Concat, $3) }
+  // | lit_array BIND lit_array { Binop($1, Bind, $3) } /* notes, tones, rhythms */
+  // | expr DUP expr { Binop($1, Dup, $3) } /* LIT_INT */
 
   /* variable assignment */ 
   | ID ASSIGN expr { Assign($1, $3) }
 
   /* function call */
   | ID LPAREN args_opt RPAREN { Call($1, $3) }
+
+  /* array access & assign */
+  | ID LBRACK expr RBRACK { ArrayAccess($1, $3) }
+  // | ID LBRACK expr RBRACK ASSIGN expr { ArrayAssign($1, $3, $6) }
 
 args_opt:
   | /* nothing */ { [] }

@@ -111,6 +111,12 @@ let translate (globals, functions) =
                    with Not_found -> StringMap.find n global_vars
     in
 
+    (* let build_array_access s i1 i2 builder isAssign = 
+      if isAssign
+         then L.build_gep(lookup s) [| i1; i2 |] s builder
+         else L.build_load (L.build_gep(lookup s) [| i1; i2|] s builder) s builder
+    in  *)
+
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
 	      SLitInt i -> L.const_int i32_t i
@@ -136,6 +142,24 @@ let translate (globals, functions) =
                         ignore (L.build_store arr_mem second_store builder);
                         let result = L.build_load struc_ptr "actual_arr_literal" builder in
                         result
+
+
+      (* | SArrayAccess(s, ind1) ->
+        let i = expr builder ind1 in 
+          build_array_access s(L.const_int i32_t 0) i builder false
+
+        for the name, get the fat pointer, then get the pointer to array
+        evaluate index expression
+        use get element pointer with index to calculate address into array
+        fetch element
+
+
+      | SArrayAssign(v, i, e) -> let e' = expr builder e in 
+                              let i' = expr builder i in
+                              let v' = L.build_load (lookup v) v builder in 
+                              let extract_array = L.build_extractvalue v' 1 "extract_ptr" builder in
+                              let extract_value = L.build_gep extract_array [| i' |] "extract_value" builder in
+                              ignore (L.build_store e' extract_value builder); e' *)
       | SNoExpr     -> L.const_int i32_t 0
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in
@@ -155,6 +179,9 @@ let translate (globals, functions) =
         | A.Neq     -> L.build_icmp L.Icmp.Ne
         | A.Lt      -> L.build_icmp L.Icmp.Slt
         | A.Lte     -> L.build_icmp L.Icmp.Sle
+        (* | A.Concat     -> 
+        | A.Bind     -> 
+        | A.Dup     ->  *)
         (* | A.Greater -> L.build_icmp L.Icmp.Sgt
         | A.Geq     -> L.build_icmp L.Icmp.Sge *)
         ) e1' e2' "tmp" builder
@@ -232,8 +259,8 @@ let translate (globals, functions) =
         L.builder_at_end context merge_bb
 
       (* Implement for loops as while loops *)
-      | SFor (e1, e2, body) -> stmt builder
-	      ( SBlock [SExpr e1 ; SWhile (e2, body) ] )
+      | SFor (e1, e2, e3, body) -> stmt builder
+	      ( SBlock [SExpr e1 ; SWhile (e2, SBlock [body ; SExpr e3]) ] )
     in
 
     (* Build the code for each statement in the function *)
