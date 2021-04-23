@@ -5,6 +5,8 @@ func int main() {
     string b;
     int c;
     note n;
+    int[] int_arr;
+    note[] note_arr;
 
     a = 1 + 2;
     c = 5;
@@ -28,10 +30,8 @@ func int main() {
 
     n = <1, "wh">;
 
-
-
-
-
+    int_arr = [1, 2];
+    note_arr = [<1, "wh">, <5, "wh">];
 
     return 0;
 }
