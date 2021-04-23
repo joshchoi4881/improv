@@ -1,0 +1,59 @@
+func note[] gcd1(int x, int y){
+  note[] result;
+  int a;
+
+  while x > 0 {
+    result $ <(x%6), hf>;
+    result $ <(y%6), hf>;
+    a = x % y;
+    x = y;
+    y = c;
+  }
+
+  result $ <(y%6), wh>;
+  return result;
+}
+
+
+// idk if this makes sense ??? 
+func note[] gcd2(int x, int y){
+  note[] result;
+  int a;
+
+  if x == 0 {
+    result $ <(y%6), hf>;
+    return result;
+  }
+  if y == 0 {
+    result $ <(x%6), hf>;
+    return result;
+  }
+  if x > y {
+    result $ <(x%6), hf>;
+    result $ <(y%6), hf>;
+    result $ gcd2(x%y, y);
+  }
+  else {
+    result $ <(x%6), hf>;
+    result $ <(y%6), hf>;
+    result $ gcd2(y%x, x);
+  }
+
+  // should reverse it? 
+
+  return result;
+}
+
+func int main() {
+  note[] gcd1;
+  note[] gcd2;
+
+  gcd1 = gcd1(98, 56);
+  gcd2 = gcd2(98, 56);
+
+  render(gcd1, "gcd1", "CMAJ", 96);
+  render(gcd2, "gcd2", "CMAJ", 96);
+
+  return 0;
+}
+

@@ -132,7 +132,7 @@ let check (globals, functions) =
           let rec type_check = function
             (t1, _) :: [] -> (Array(t1), SLitArray(array))
             | ((t1,_) :: (t2,_) :: _) when t1 != t2 ->
-              raise (Failure ("inconsistent array types"))
+              raise (Failure ("inconsistent array types, expected " ^ string_of_typ t1 ^ " but found " ^ string_of_typ t2))
             | _ :: t -> type_check t
             | [] -> raise (Failure ("empty array")) 
             in type_check array
@@ -237,7 +237,11 @@ let check (globals, functions) =
         Expr e -> SExpr (expr e) (*check the expr semantically woo*)
       | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | For(e1, e2, e3, st) ->
+<<<<<<< HEAD
           SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
+=======
+	        SFor(expr e1, expr e2, expr e3, check_stmt st)
+>>>>>>> c74635bee72c16744249edde9313e875c20c5dbe
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
       | Return e -> let (t, e') = expr e in
         if t = func.ftype then SReturn (t, e') 

@@ -7,6 +7,8 @@ func int main() {
     note n;
     int[] int_arr;
     note[] note_arr;
+    int i;
+    int x;
 
     a = 1 + 2;
     c = 5;
@@ -32,6 +34,20 @@ func int main() {
 
     int_arr = [1, 2];
     note_arr = [<1, "wh">, <5, "wh">];
+
+    for i = 0; i < 5; i = i + 1 {
+      printi(i);
+    }
+
+    while i < 10 {
+      prints("while loop");
+      i = 20;
+    }
+
+
+    x = 4115 % 42;
+
+    printi(x); 
 
     return 0;
 }

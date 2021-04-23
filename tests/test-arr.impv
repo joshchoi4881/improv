@@ -1,0 +1,8 @@
+func int main() {
+  int[] int_arr;
+  note[] note_arr;
+
+  int_arr = [1, 2];
+  note_arr = [<1, "wh">, <5, "wh">];
+  return 0;
+}

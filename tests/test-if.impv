@@ -1,0 +1,9 @@
+func int main() {
+  bool e;
+  e = true;
+  if e {
+    prints("true");
+  } else {
+    prints("false");
+  }
+}
