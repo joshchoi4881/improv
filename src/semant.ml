@@ -88,8 +88,8 @@ let check (globals, functions) =
 
     (* Raise exception if given tone is not valid (only 1-6) *)
     let check_tone t = 
-      if t >= 1 && t <= 6 then t
-      else raise (Failure ("invalid tone assignment, must be within 1-6"))
+      if t >= 0 && t <= 5 then t
+      else raise (Failure ("invalid tone assignment, must be within 0-5"))
     in 
 
     (* Raise exception if given rhythm is not valid *)

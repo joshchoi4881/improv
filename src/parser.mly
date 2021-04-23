@@ -96,19 +96,11 @@ stmt:
   | expr SEP                              { Expr $1               }
   | RETURN expr_opt SEP                   { Return $2             }
   | LCURLY stmt_list RCURLY               { Block(List.rev $2)    }
-<<<<<<< HEAD
   | IF LPAREN expr RPAREN stmt %prec NOELSE  { If($3, $5, Block([])) }
   | IF LPAREN expr RPAREN stmt ELSE stmt                { If($3, $5, $7)        }
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt                       { While($3, $5)         }
-=======
-  | IF expr stmt %prec NOELSE             { If($2, $3, Block([])) }
-  | IF expr stmt ELSE stmt                { If($2, $3, $5)        }
-  | FOR expr SEP expr SEP expr stmt                 
-                                          { For($2, $4, $6, $7) }
-  | WHILE expr stmt                       { While($2, $3)         }
->>>>>>> c74635bee72c16744249edde9313e875c20c5dbe
 
 expr_opt:
   | /* nothing */ { NoExpr }
