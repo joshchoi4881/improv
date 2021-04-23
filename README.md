@@ -5,3 +5,6 @@
 ## examples
 
 ## testing
+
+to run all tests: 
+

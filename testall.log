@@ -104,6 +104,11 @@ cc -o test-while.exe test-while.s
 diff -b test-while.out tests/test-while.out > test-while.diff
 ###### SUCCESS
 
+###### Testing fail-returntype
+./src/improv.native < tests/fail-returntype.impv 2> fail-returntype.err >> testall.log
+diff -b fail-returntype.err tests/fail-returntype.err > fail-returntype.diff
+###### SUCCESS
+
 ###### Testing fail-rhythm
 ./src/improv.native < tests/fail-rhythm.impv 2> fail-rhythm.err >> testall.log
 diff -b fail-rhythm.err tests/fail-rhythm.err > fail-rhythm.diff
