@@ -1,8 +1,9 @@
 func int gcd(int x, int y) {
-  while (x > 0) {
-    int a = x % y;
+  int a;
+  while x > 0 {
+    a = x % y;
     x = y;
-    y = c;
+    y = a;
   }
   return y;
 }

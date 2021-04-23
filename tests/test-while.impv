@@ -1,0 +1,8 @@
+func int main() {
+  int i;
+  while i < 5 {
+    printi(i);
+    i = i + 1;
+  }
+  return 0;
+}

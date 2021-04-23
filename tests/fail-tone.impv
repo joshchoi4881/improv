@@ -1,0 +1,5 @@
+func int main() {
+  note n;
+  n = <0, "wh">;
+  return 0;
+}
