@@ -32,7 +32,7 @@ all : clean improv.native midifile.o
 
 # Testing the "printbig" example
 # printbig : printbig.c
-	# cc -o printbig -DBUILD_TEST printbig.c
+# 	cc -o printbig -DBUILD_TEST printbig.c
 
 # Building the tarball
 
