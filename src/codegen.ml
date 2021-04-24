@@ -64,6 +64,12 @@ let translate (globals, functions) =
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
 
+  (* TODO: add render function, printarray, printnote *)
+  let stringsubstring_t : L.lltype =
+      L.function_type string_t [| string_t ; i32_t ; i32_t |] in
+  let stringsubstring_func : L.llvalue =
+      L.declare_function "substring" stringsubstring_t the_module in
+
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
   let function_decls : (L.llvalue * sfunc_decl) StringMap.t =

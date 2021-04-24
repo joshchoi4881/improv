@@ -29,9 +29,9 @@
 #include "midifile.h"
 #include "improv.h"
 
+/* write another function to call render with same arguments as our language, pass in Note_Arr */
 
-
-void TestPentatonic(int key[], int tempo, Note* notes){
+void render(Note* notes, int size, int key[], int tempo){
   MIDI_FILE *mf;
   int i;
 
@@ -43,11 +43,12 @@ void TestPentatonic(int key[], int tempo, Note* notes){
 		midiTrackAddProgramChange(mf, 1, MIDI_PATCH_ELECTRIC_GUITAR_JAZZ);
 		midiSongAddSimpleTimeSig(mf, 1, 4, MIDI_NOTE_CROCHET);
 
-		for(i=0;i<8;i++)
-			{
-			/* midiTrackAddText(mf, 1, textLyric, sing[i]); */
-			midiTrackAddNote(mf, 1, key[i], MIDI_NOTE_CROCHET, MIDI_VOL_HALF, TRUE, FALSE);
-			}
+    for(i = 0; i < size; i++, notes++){
+      printf("tone: %d, rhythm: %d\n", notes->tone, notes->rhythm);
+
+      midiTrackAddNote(mf, 1, key[notes->tone], rhythms[notes->rhythm], MIDI_VOL_HALF, TRUE, FALSE);
+    }
+
 		midiFileClose(mf);
 		}
   
@@ -98,94 +99,6 @@ MIDI_FILE *mf;
 		}
 }
 
-void TestJingle(void)
-{
-MIDI_FILE *mf;
-int chords[4][3] = {
-/*A*/	{ MIDI_OCTAVE_2+MIDI_NOTE_A, MIDI_OCTAVE_3+MIDI_NOTE_C_SHARP, MIDI_OCTAVE_3+MIDI_NOTE_E, },
-/*D*/	{ MIDI_OCTAVE_2+MIDI_NOTE_A, MIDI_OCTAVE_3+MIDI_NOTE_D, MIDI_OCTAVE_3+MIDI_NOTE_F_SHARP, },
-/*E*/	{ MIDI_OCTAVE_2+MIDI_NOTE_B, MIDI_OCTAVE_3+MIDI_NOTE_E, MIDI_OCTAVE_3+MIDI_NOTE_G_SHARP, },
-/*A*/	{ MIDI_OCTAVE_3+MIDI_NOTE_C_SHARP, MIDI_OCTAVE_3+MIDI_NOTE_E, MIDI_OCTAVE_3+MIDI_NOTE_A, },
-};
-int melody[][2] = { 
-	{ MIDI_NOTE_A,		MIDI_NOTE_CROCHET}, 
-	{ MIDI_NOTE_A,		MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_C_SHARP+MIDI_OCTAVE, MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_D+MIDI_OCTAVE, MIDI_NOTE_CROCHET}, 
-	{ MIDI_NOTE_C_SHARP+MIDI_OCTAVE, MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_B, MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_C_SHARP+MIDI_OCTAVE, MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_B, MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_A, MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_G_SHARP, MIDI_NOTE_QUAVER}, 
-	{ MIDI_NOTE_A, MIDI_NOTE_MINIM}, 
-};
-int i;
-	
-	if ((mf = midiFileCreate("test2.mid", TRUE)))
-		{
-		/* Set-up an environment for the sound */
-		midiSongAddKeySig(mf, 1, keyAMaj);		
-
-		midiFileSetTracksDefaultChannel(mf, 1, MIDI_CHANNEL_1);
-		midiFileSetTracksDefaultChannel(mf, 2, MIDI_CHANNEL_2);
-		midiFileSetTracksDefaultChannel(mf, 3, MIDI_CHANNEL_DRUMS);
-
-		/* Adding information about the piece */
-		midiTrackAddText(mf, 1, textCopyright, "(C) Steev 1998");
-		midiTrackAddText(mf, 0, textTrackName, "Jingle in A");
-		/* (some sequencers use the first 'textTrackName', regardless of
-		** channel, as the title) */
-
-		/* Give them names */
-		midiTrackAddText(mf, 1, textTrackName, "Melody");
-		midiTrackAddText(mf, 2, textTrackName, "Chords");
-		midiTrackAddText(mf, 3, textTrackName, "Drums");
-
-		midiTrackAddProgramChange(mf, 1, MIDI_PATCH_FX_3_CRYSTAL);
-		midiTrackAddProgramChange(mf, 2, MIDI_PATCH_SYNTHSTRINGS_1);
-
-		/* Write melody to track 1 */
-		for(i=0;i<sizeof(melody)/sizeof(melody[0]);i++)
-			{
-			midiTrackAddNote(mf, 1, MIDI_OCTAVE_4+melody[i][0], melody[i][1], MIDI_VOL_HALF, TRUE, FALSE);
-			/* Since MIDI notes are just integers, we could add 'MIDI_OCTAVE_4+1'
-			** here to transpose it very simply into Bb Maj 
-			*/
-			}
-
-		/* Write chords to track 2 */
-		/* Because we need three notes to sound at once, we only move
-		** the play ptr on once they've all been played.
-		*/
-		for(i=0;i<sizeof(chords)/sizeof(chords[0]);i++)
-			{
-			midiTrackAddNote(mf, 2, chords[i][0], MIDI_NOTE_MINIM, MIDI_VOL_HALF, FALSE, FALSE);
-			midiTrackAddNote(mf, 2, chords[i][1], MIDI_NOTE_MINIM, MIDI_VOL_HALF, FALSE, FALSE);
-			midiTrackAddNote(mf, 2, chords[i][2], MIDI_NOTE_MINIM, MIDI_VOL_HALF, TRUE, FALSE);
-			}
-
-		/* Write a (dull) drum track */
-		for(i=0;i<7;i++)
-			{
-			int vol = MIDI_VOL_HALF;
-
-			if (i==0 || i==4)	/* create accents on first beat */
-				vol = MIDI_VOL_HALF+30;
-
-			midiTrackAddNote(mf, 3, MIDI_DRUM_BASS_DRUM, MIDI_NOTE_CROCHET, vol, FALSE, FALSE);
-			if (i&1)	/* every other beat */
-				midiTrackAddNote(mf, 3, MIDI_DRUM_ELECTRIC_SNARE, MIDI_NOTE_CROCHET, vol, FALSE, FALSE);
-			
-			/* explicitly move play ptr on */
-			midiTrackIncTime(mf, 3, MIDI_NOTE_CROCHET, FALSE);
-			}
-
-		midiFileClose(mf);
-		}
-
-}
-
 void TestEventList(const char *pFilename)
 {
 MIDI_FILE *mf = midiFileOpen(pFilename);
@@ -217,31 +130,29 @@ MIDI_FILE *mf = midiFileOpen(pFilename);
 
 int main(int argc, char* argv[])
 {
-  int cmaj[] = {0, MIDI_OCTAVE_5, MIDI_OCTAVE_5+MIDI_NOTE_D, MIDI_OCTAVE_5+MIDI_NOTE_E, 
-                MIDI_OCTAVE_5+MIDI_NOTE_G, MIDI_OCTAVE_5+MIDI_NOTE_A}; 
-
   int i;
+  int len = 5;
 
-  Note notes[5];
+  /* need to pass in array of notes */
+
+  Note notes[len];
   notes[0].tone = 1;
   notes[0].rhythm = 1;
-  notes[1].tone = 4;
+  notes[1].tone = 2;
   notes[1].rhythm = 2;
   notes[2].tone = 3;
   notes[2].rhythm = 3;
+  notes[3].tone = 4;
+  notes[3].rhythm = 4;
+  notes[4].tone = 5;
+  notes[4].rhythm = 5;
 
   for(i = 0; i < 5; i++){
     printf("tone: %d, rhythm: %d\n", notes[i].tone, notes[i].rhythm);
   }
-
   Note* ptr = notes;
-  struct MyData* endPtr = data + sizeof(data)/sizeof(data[0]);
 
-  TestPentatonic(cmaj, 96, notes);
-	//TestScale();
-	//TestJingle();
-
-	//TestEventList("test.mid");
+  render(ptr, len, fminor, 96);
 
 	return 0;
 }

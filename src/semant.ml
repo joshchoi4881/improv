@@ -40,6 +40,16 @@ let check (globals, functions) =
     in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String) ] (*Simplicity for hello world*)
   in
 
+  (* TODO: add render function, printarray, printnote *)
+  let built_in_decls =
+    StringMap.add "functionname" {
+      typ = String;
+      fname = "functionname";
+      formals = [(String, "str"); (Int, "from"); (Int, "to")];
+      locals = []; body = [];
+    } built_in_decls 
+  in
+
   (* Add function name to symbol table *)
   let add_func map fd = 
     let built_in_err = "function " ^ fd.fname ^ " may not be defined"
@@ -93,6 +103,8 @@ let check (globals, functions) =
     in 
 
     (* Raise exception if given rhythm is not valid *)
+
+      (* TODO: map strings to integers, if not in map then invalid *)
     let check_rhythm r = 
       if String.equal r "wh" || String.equal r "hf" || String.equal r "qr" || String.equal r "ei" || String.equal r "sx" then r
       else raise (Failure ("invalid rhythm assignment " ^ r))

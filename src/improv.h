@@ -12,6 +12,9 @@ typedef struct Note_Arr {
     Note *arr;
 } Note_Arr;
 
+#define CMAJ 1
+// swtich statements
+
 // Major Pentatonic
 int cmaj[] = { 0, MIDI_OCTAVE_5, MIDI_OCTAVE_5 + MIDI_NOTE_D,
             MIDI_OCTAVE_5 + MIDI_NOTE_E, MIDI_OCTAVE_5 + MIDI_NOTE_G,
