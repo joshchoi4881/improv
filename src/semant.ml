@@ -46,7 +46,7 @@ let check (globals, functions) =
     StringMap.add "render" {
       ftype = None;
       fname = "render";
-      formals = [(Array(Note), "noteArr"); (Int, "key"); (Int, "tempo")]; (* formals *)
+      params = [(Array(Note), "noteArr"); (Int, "key"); (Int, "tempo")]; (* formals *)
       vars = []; (* locals *)
       body = [] } built_in_decls 
   in
@@ -110,6 +110,7 @@ let check (globals, functions) =
       if String.equal r "wh" || String.equal r "hf" || String.equal r "qr" || String.equal r "ei" || String.equal r "sx" then r
       else raise (Failure ("invalid rhythm assignment " ^ r))
     in *)
+    (*
     let check_rhythm r =  
         if r String.equal "wh" then 0
         if r String.equal "hf" then 1
@@ -117,17 +118,17 @@ let check (globals, functions) =
         if r String.equal "ei" then 4   
         if r String.equal "sx" then 5   
         else raise (Failure ("invalid rhythm assignment " ^ r))
-    in
+    in *)
 
-    (*let check_rhythm r = function
-    mathc r with
-        | "wh" -> 0 
-        | "hf" -> 1
-        | "qr" -> 2 
-        | "ei" -> 3 
-        | "sx" -> 4
+    let check_rhythm r = 
+      match r with
+        | "wh" -> "0" 
+        | "hf" -> "1"
+        | "qr" -> "2" 
+        | "ei" -> "3" 
+        | "sx" -> "4"
         | _ -> raise (Failure ("invalid rhythm assignment " ^ r))
-      in*)
+      in 
 
     (* let check_type lvaluet rvaluet err =
       if (String.compare (string_of_typ lvaluet) (string_of_typ rvaluet)) == 0 then lvaluet else raise err

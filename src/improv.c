@@ -17,15 +17,11 @@ Using MidiLib from https://github.com/MarquisdeGeek/midilib
 /* print note literal */
 void printn(Note* note){
   char *rhythm_map[6] ={"wh", "hf", "qr", "ei", "sx"};
-  printf("<%d, %s>\n", note->tone, rhythm_map[note->rhythm]);
+  printf("<%d, %s>\n", note->tone, rhythm_map[atoi(note->rhythm)]);
 }
 
 /* print arrays? */
 void printa(){
-}
-
-void render(Note_Arr* noteArr, int key, int tempo){
-  render_backend(noteArr->arr, noteArr->len, getKey(key), tempo);
 }
 
 int* getKey(int key){
@@ -53,39 +49,35 @@ void render_backend(Note* notes, int size, int key[], int tempo){
 		midiSongAddSimpleTimeSig(mf, 1, 4, MIDI_NOTE_CROCHET);
 
     for(i = 0; i < size; i++, notes++){
-      /*
-      printf("tone: %d, rhythm: %d\n", notes->tone, notes->rhythm); */
-      midiTrackAddNote(mf, 1, key[notes->tone], rhythms[notes->rhythm], MIDI_VOL_HALF, TRUE, FALSE);
+      printn(notes);
+      midiTrackAddNote(mf, 1, key[notes->tone], rhythms[atoi(notes->rhythm)], MIDI_VOL_HALF, TRUE, FALSE);
     }
 
 		midiFileClose(mf);
 		}
 }
 
+void render(Note_Arr* noteArr, int key, int tempo){
+  int *keyNotes = getKey(key);
+  render_backend(noteArr->arr, noteArr->len, keyNotes, tempo);
+}
+
 #ifdef BUILD_TEST
 int main()
 {
   int i;
-  int len = 5;
+  Note *ptr = (Note *) malloc(5 * sizeof(Note));
+  char buffer[2];
+  Note_Arr noteArr = {5, ptr};
 
-  Note notes[len];
-  notes[0].tone = 1;
-  notes[0].rhythm = 1;
-  notes[1].tone = 2;
-  notes[1].rhythm = 2;
-  notes[2].tone = 3;
-  notes[2].rhythm = 3;
-  notes[3].tone = 4;
-  notes[3].rhythm = 4;
-  notes[4].tone = 5;
-  notes[4].rhythm = 5;
-
-  for(i = 0; i < 5; i++){
-    printf("tone: %d, rhythm: %d\n", notes[i].tone, notes[i].rhythm);
+  for(i = 0; i < noteArr.len; i++){
+    (ptr+i)->tone = i;
+    (ptr+i)->rhythm = "1";
   }
-  Note* ptr = notes;
 
-  render(ptr, len, fminor, 96);
+  Note_Arr *arrPtr = &noteArr;
+
+  render(arrPtr, 3, 96);
 
 	return 0;
 }

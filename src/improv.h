@@ -4,7 +4,7 @@
 
 typedef struct Note{
   int tone;
-  int rhythm;
+  char *rhythm;
 } Note;
 
 typedef struct Note_Arr {

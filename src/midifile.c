@@ -1183,3 +1183,95 @@ void midiReadFreeMessage(MIDI_MSG *pMsg)
 	if (pMsg->data)	free((void *)pMsg->data);
 	pMsg->data = NULL;
 }
+
+
+
+/* 
+additional functions written by improv team 
+*/
+
+/* print note literal */
+void printn(Note* note){
+  char *rhythm_map[6] ={"wh", "hf", "qr", "ei", "sx"};
+  printf("<%d, %s>\n", note->tone, rhythm_map[atoi(note->rhythm)]);
+}
+
+int* getKey(int key){
+  switch(key){
+    case CMAJ:
+      return cmaj;
+    case CSHARPMAJ:
+      return csharpmaj;
+    case DMAJ:
+      return dmaj;
+    case DSHARPMAJ:
+      return dsharpmaj;
+    case EMAJ:
+      return emaj;
+    case FMAJ:
+      return fmaj;
+    case FSHARPMAJ:
+      return fsharpmaj;
+    case GMAJ:
+      return gmaj;
+    case GSHARPMAJ:
+      return gsharpmaj;
+    case AMAJ:
+      return amaj;
+    case ASHARPMAJ:
+      return asharpmaj;
+    case BMAJ:
+      return bmaj;
+    case CMIN:
+      return cmin;
+    case CSHARPMIN:
+      return csharpmin;
+    case DMIN:
+      return dmin;
+    case DSHARPMIN:
+      return dsharpmin;
+    case EMIN:
+      return emin;
+    case FMIN:
+      return fminor;
+    case FSHARPMIN:
+      return fsharpmin;
+    case GMIN:
+      return gmin;
+    case GSHARPMIN:
+      return gsharpmin;
+    case AMIN:
+      return amin;
+    case ASHARPMIN:
+      return asharpmin;
+    case BMIN:
+      return bmin;
+  } 
+}
+
+/* create midi file */
+void render_backend(Note* notes, int size, int key[], int tempo){
+  MIDI_FILE *mf;
+  int i;
+
+  int rhythms[] = {MIDI_NOTE_BREVE, MIDI_NOTE_MINIM, MIDI_NOTE_CROCHET, MIDI_NOTE_QUAVER, MIDI_NOTE_SEMIQUAVER}; 
+  
+  if ((mf = midiFileCreate("testpentatonic.mid", TRUE))){
+		midiSongAddTempo(mf, 1, tempo);
+		midiFileSetTracksDefaultChannel(mf, 1, MIDI_CHANNEL_1);
+		midiTrackAddProgramChange(mf, 1, MIDI_PATCH_ELECTRIC_GUITAR_JAZZ);
+		midiSongAddSimpleTimeSig(mf, 1, 4, MIDI_NOTE_CROCHET);
+
+    for(i = 0; i < size; i++, notes++){
+      printn(notes);
+      midiTrackAddNote(mf, 1, key[notes->tone], rhythms[atoi(notes->rhythm)], MIDI_VOL_HALF, TRUE, FALSE);
+    }
+
+		midiFileClose(mf);
+		}
+}
+
+void render(Note_Arr* noteArr, int key, int tempo){
+  int *keyNotes = getKey(key);
+  render_backend(noteArr->arr, noteArr->len, keyNotes, tempo);
+}

@@ -1,1 +1,1 @@
-Fatal error: exception Failure ("undeclared identifier d")
+Fatal error: exception Failure("undeclared identifier d")

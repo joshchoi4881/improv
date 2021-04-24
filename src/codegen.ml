@@ -65,10 +65,16 @@ let translate (globals, functions) =
       L.declare_function "printf" printf_t the_module in
 
   (* TODO: add render function, printarray, printnote *)
+  let printn_t : L.lltype =
+    L.function_type i32_t [| ltype_of_typ(A.Note) |] in
+  let printn_func : L.llvalue =
+    L.declare_function "printn" printn_t the_module in
+
+(*     
   let stringsubstring_t : L.lltype =
       L.function_type string_t [| string_t ; i32_t ; i32_t |] in
   let stringsubstring_func : L.llvalue =
-      L.declare_function "substring" stringsubstring_t the_module in
+      L.declare_function "substring" stringsubstring_t the_module in *)
 
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
@@ -87,7 +93,10 @@ let translate (globals, functions) =
     let builder = L.builder_at_end context (L.entry_block the_function) in
 
     let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder
-    and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
+    and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder 
+    (* pointer to notes?? 
+    and note_format_str = L.build_global_stringptr 
+    *) in
 
     (* Construct the function's "locals": param arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -225,6 +234,9 @@ let translate (globals, functions) =
       | SCall ("prints", [e]) -> 
 	      L.build_call printf_func [| string_format_str ; (expr builder e) |]
 	        "printf" builder
+      | SCall ("printn", [e]) -> 
+        L.build_call printn_func [| (expr builder e) |]
+          "printn" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (expr builder) (List.rev args)) in
