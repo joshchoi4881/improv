@@ -1,35 +1,9 @@
 /* 
 
-Author: Emily Li
-
 Helper functions for improv
 Using MidiLib from https://github.com/MarquisdeGeek/midilib
 
 */
-
-
-
-/*
- * miditest.c - Test suite for Steev's MIDI Library 
- * Version 1.4
- *
- *  AUTHOR: Steven Goodwin (StevenGoodwin@gmail.com)
- *			Copyright 2010, Steven Goodwin.
- *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 2 of
- *  the License,or (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,11 +14,18 @@ Using MidiLib from https://github.com/MarquisdeGeek/midilib
 #include "midifile.h"
 #include "improv.h"
 
-/* write another function to call render with same arguments as our language, pass in Note_Arr */
+/* print note literal */
+void printn(Note* note){
+  char *rhythm_map[6] ={"wh", "hf", "qr", "ei", "sx"};
+  printf("<%d, %s>\n", note->tone, rhythm_map[note->rhythm]);
+}
+
+/* print arrays? */
+void printa(){
+}
 
 void render(Note_Arr* noteArr, int key, int tempo){
-  render_backend(noteArr->arr, noteArr->len, )
-
+  render_backend(noteArr->arr, noteArr->len, getKey(key), tempo);
 }
 
 int* getKey(int key){
@@ -54,12 +35,11 @@ int* getKey(int key){
     case CSHARPMAJ:
       return csharpmaj;
     case DMAJ:
-      
+      return dmaj;
   } 
 }
 
-
-
+/* create midi file */
 void render_backend(Note* notes, int size, int key[], int tempo){
   MIDI_FILE *mf;
   int i;
@@ -73,24 +53,20 @@ void render_backend(Note* notes, int size, int key[], int tempo){
 		midiSongAddSimpleTimeSig(mf, 1, 4, MIDI_NOTE_CROCHET);
 
     for(i = 0; i < size; i++, notes++){
-      printf("tone: %d, rhythm: %d\n", notes->tone, notes->rhythm);
-
+      /*
+      printf("tone: %d, rhythm: %d\n", notes->tone, notes->rhythm); */
       midiTrackAddNote(mf, 1, key[notes->tone], rhythms[notes->rhythm], MIDI_VOL_HALF, TRUE, FALSE);
     }
 
 		midiFileClose(mf);
 		}
-  
-
 }
 
-
-int main(int argc, char* argv[])
+#ifdef BUILD_TEST
+int main()
 {
   int i;
   int len = 5;
-
-  /* need to pass in array of notes */
 
   Note notes[len];
   notes[0].tone = 1;
@@ -113,3 +89,4 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+#endif
