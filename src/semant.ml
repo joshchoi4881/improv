@@ -37,17 +37,18 @@ let check (globals, functions) =
       params = [(ty, "x")];
       vars = []; 
       body = [] } map
-    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String) ] (*Simplicity for hello world*)
+    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note)]; 
+    (* ("printa", ty) *)
   in
 
-  (* TODO: add render function, printarray, printnote *)
+  (* TODO: add render function, printarray *)
   let built_in_decls =
-    StringMap.add "functionname" {
-      typ = String;
-      fname = "functionname";
-      formals = [(String, "str"); (Int, "from"); (Int, "to")];
-      locals = []; body = [];
-    } built_in_decls 
+    StringMap.add "render" {
+      ftype = None;
+      fname = "render";
+      formals = [(Array(Note), "noteArr"); (Int, "key"); (Int, "tempo")]; (* formals *)
+      vars = []; (* locals *)
+      body = [] } built_in_decls 
   in
 
   (* Add function name to symbol table *)
@@ -104,11 +105,29 @@ let check (globals, functions) =
 
     (* Raise exception if given rhythm is not valid *)
 
-      (* TODO: map strings to integers, if not in map then invalid *)
+      (* TODO: map strings to integers, if not in map then invalid 
     let check_rhythm r = 
       if String.equal r "wh" || String.equal r "hf" || String.equal r "qr" || String.equal r "ei" || String.equal r "sx" then r
       else raise (Failure ("invalid rhythm assignment " ^ r))
+    in *)
+    let check_rhythm r =  
+        if r String.equal "wh" then 0
+        if r String.equal "hf" then 1
+        if r String.equal "qr" then 2
+        if r String.equal "ei" then 4   
+        if r String.equal "sx" then 5   
+        else raise (Failure ("invalid rhythm assignment " ^ r))
     in
+
+    (*let check_rhythm r = function
+    mathc r with
+        | "wh" -> 0 
+        | "hf" -> 1
+        | "qr" -> 2 
+        | "ei" -> 3 
+        | "sx" -> 4
+        | _ -> raise (Failure ("invalid rhythm assignment " ^ r))
+      in*)
 
     (* let check_type lvaluet rvaluet err =
       if (String.compare (string_of_typ lvaluet) (string_of_typ rvaluet)) == 0 then lvaluet else raise err
