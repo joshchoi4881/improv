@@ -1,11 +1,11 @@
 func int recursive_gcd(int x, int y) {
-    if x == 0 {
+    if (x == 0) {
         return y;
     }
-    if y == 0 {
+    if (y == 0) {
         return x;
     }
-    if x > y {
+    if (x > y) {
         return recursive_gcd(x%y, y);
     } else {
         return recursive_gcd(y%x, x);

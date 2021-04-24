@@ -1,7 +1,7 @@
 func int main() {
   int i;
   for (i = 0; i < 5; i = i + 1) {
-    printi(i);
+    printi(d);
   }
   return 0;
 }

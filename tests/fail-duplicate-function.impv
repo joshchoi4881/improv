@@ -1,0 +1,11 @@
+func int add(int x, int y) {
+  return x + y;
+}
+
+func int add(int x, int y) {
+  return x * y;
+}
+
+func int main() {
+  printi(add(4115, 42));
+}
