@@ -7,7 +7,8 @@
 %token COMMA  
 
 %token PLUS MINUS TIMES DIVIDE MOD
-// %token CONCAT BIND DUP
+%token CONCAT 
+// BIND DUP
 %token EQ NEQ LT LTE GT GTE 
 %token AND OR NOT 
 
@@ -33,7 +34,7 @@
 %left AND 
 %left EQ NEQ
 %nonassoc LT LTE GT GTE
-// %left CONCAT
+%left CONCAT
 // %nonassoc BIND 
 // %nonassoc DUP
 %left COMMA 
@@ -143,6 +144,7 @@ expr:
   /* array access & assign */
   | ID LBRACK expr RBRACK { ArrayAccess($1, $3) }
   | ID LBRACK expr RBRACK ASSIGN expr { ArrayAssign($1, $3, $6) }
+  | lit_array CONCAT lit_array { ArrayAppend($1, $3) }
 
 args_opt:
   | /* nothing */ { [] }

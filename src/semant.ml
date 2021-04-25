@@ -197,6 +197,17 @@ let check (globals, functions) =
         
         (* (Int, SLitInt 11) *)
 
+      | ArrayAppend(a1, a2) -> 
+          let (t1, a1') = expr a1 in
+          let (t2, a2') = expr a2 in
+          (* let ty1 = (type_of_identifier a1') in *)
+          (* let ty' = match t with
+              Array(ty) -> ty
+            | _ -> raise (Failure ("invalid array type")) in *)
+          (t1, SArrayAppend ((t1, a1'), (t2, a2')))
+          
+          (* (Int, SLitInt 11) *)
+
       | NoExpr     -> (None, SNoExpr)
       | Id s       -> (type_of_identifier s, SId s)
       | Assign(var, e) as ex -> 

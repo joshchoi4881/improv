@@ -31,8 +31,8 @@ rule token = parse
 | '>' { GT }
 | ">=" { GTE }
 | ',' { COMMA }
-(* | '$' { CONCAT }
-| '@' { BIND }
+| '$' { CONCAT }
+(* | '@' { BIND }
 | '^' { DUP } *)
 (* KEYWORDS *)
 (* DATA TYPES *)
