@@ -37,7 +37,7 @@ let check (globals, functions) =
       params = [(ty, "x")];
       vars = []; 
       body = [] } map
-    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note)]; 
+    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note); ("printbig", Int)]; 
     (* ("printa", ty) *)
   in
 
@@ -46,7 +46,7 @@ let check (globals, functions) =
     StringMap.add "render" {
       ftype = None;
       fname = "render";
-      params = [(Array(Note), "noteArr"); (Int, "key"); (Int, "tempo")]; (* formals *)
+      params = [(Array(Note), "noteArr"); (String, "filename"); (Int, "key"); (Int, "tempo")]; (* formals *)
       vars = []; (* locals *)
       body = [] } built_in_decls 
   in

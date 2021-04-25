@@ -63,6 +63,11 @@ let translate (globals, functions) =
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
+  
+  let printbig_t : L.lltype =
+      L.function_type i32_t [| i32_t |] in
+  let printbig_func : L.llvalue =
+      L.declare_function "printbig" printbig_t the_module in
 
   (* TODO: add render function, printarray, printnote *)
   let printn_t : L.lltype =
@@ -70,6 +75,12 @@ let translate (globals, functions) =
   let printn_func : L.llvalue =
     L.declare_function "printn" printn_t the_module in
 
+  let render_t : L.lltype =
+    L.function_type i32_t [| ltype_of_typ(A.Array(Note)) ; string_t ; i32_t ; i32_t |] in
+  let render_func : L.llvalue =
+    L.declare_function "render" render_t the_module in
+  
+  
 (*     
   let stringsubstring_t : L.lltype =
       L.function_type string_t [| string_t ; i32_t ; i32_t |] in
@@ -228,6 +239,8 @@ let translate (globals, functions) =
         (match op with
         | A.Not                  -> L.build_not) e' "tmp" builder
       | SCall ("print", [e])
+      | SCall ("printbig", [e]) ->
+        L.build_call printbig_func [| (expr builder e) |] "printbig" builder
       | SCall ("printi", [e]) ->
         L.build_call printf_func [| int_format_str ; (expr builder e) |]
           "printf" builder
@@ -237,6 +250,9 @@ let translate (globals, functions) =
       | SCall ("printn", [e]) -> 
         L.build_call printn_func [| (expr builder e) |]
           "printn" builder
+      | SCall ("render", [e]) -> 
+        L.build_call render_func [| (expr builder e) ; (expr builder e) ; (expr builder e) ; (expr builder e) |]
+          "render" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (expr builder) (List.rev args)) in
