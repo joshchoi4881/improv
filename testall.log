@@ -2,102 +2,107 @@
 
 ###### Testing test-arith
 ./src/improv.native tests/test-arith.impv > test-arith.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-arr-access
 ./src/improv.native tests/test-arr-access.impv > test-arr-access.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-arr-assign
 ./src/improv.native tests/test-arr-assign.impv > test-arr-assign.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-arr
 ./src/improv.native tests/test-arr.impv > test-arr.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-fib
 ./src/improv.native tests/test-fib.impv > test-fib.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-for
 ./src/improv.native tests/test-for.impv > test-for.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-gcd-recursive
 ./src/improv.native tests/test-gcd-recursive.impv > test-gcd-recursive.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-gcd
 ./src/improv.native tests/test-gcd.impv > test-gcd.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-if
 ./src/improv.native tests/test-if.impv > test-if.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-note
 ./src/improv.native tests/test-note.impv > test-note.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-printa
 ./src/improv.native tests/test-printa.impv > test-printa.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-printbig
 ./src/improv.native tests/test-printbig.impv > test-printbig.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-printi
 ./src/improv.native tests/test-printi.impv > test-printi.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-printmidi
 ./src/improv.native tests/test-printmidi.impv > test-printmidi.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-printn
 ./src/improv.native tests/test-printn.impv > test-printn.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-prints
 ./src/improv.native tests/test-prints.impv > test-prints.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-render
 ./src/improv.native tests/test-render.impv > test-render.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-sort
+./src/improv.native tests/test-sort.impv > test-sort.ll
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-var-int
 ./src/improv.native tests/test-var-int.impv > test-var-int.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-var-string
 ./src/improv.native tests/test-var-string.impv > test-var-string.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing test-while
 ./src/improv.native tests/test-while.impv > test-while.ll
-./testall.sh: line 62: ./src/improv.native: No such file or directory
+./testAll.sh: line 62: ./src/improv.native: No such file or directory
 ###### FAILED
 
 ###### Testing fail-duplicate-function

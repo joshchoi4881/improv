@@ -1,0 +1,13 @@
+func int main() {
+    note[] amazing_grace = [<5, "qr">, <2, "hf">, <4, "ei">, <2, "ei">, <4, "hf">];
+    note[] how_sweet_the_sound = [<3, "qr">, <2, "hf">, <1, "qr">, <5, "hf">];
+    note[] that_saved_a_wretch_like_me = [<5, "qr">, <2, "hf">, <4, "ei">, <2, "ei">, 
+        <4, "hf">, <3, "qr">, <5, "wh">];
+    note[] i_once_was_lost = [<4, "qr">, <5, "hf">, <5, "ei">, <4, "ei">, <2, "hf">];
+    note[] but_now_im_found = [<5, "qr">, <1, "wh">, <2, "ei">, <1, "ei">, <5, "hf">];
+    note[] was_blind_but_now_i_see = [<5, "qr">, <2, "hf">, <4, "ei">, <2, "ei">, 
+        <4, "hf">, <3, "qr">, <2, "wh">];
+    note[] melody = amazing_grace $ how_sweet_the_sound $ that_saved_a_wretch_like_me $ i_once_was_lost $ but_now_im_found $ was_blind_but_now_i_see;
+    render(melody, "test.mid", 1, 120);
+    return 0;
+}
