@@ -169,12 +169,11 @@ let translate (globals, functions) =
                         result
 
       | SArrayAccess(s, ind1) ->
-        let i = expr builder ind1 in 
-          build_array_access s (L.const_int i32_t 0) i builder false
-        (* for the name, get the fat pointer, then get the pointer to array
-        evaluate index expression
-        use get element pointer with index to calculate address into array
-        fetch element *)
+        let i'= expr builder ind1 in 
+        let v' = L.build_load (lookup s) s builder in 
+        let extract_value = L.build_extractvalue v' 1 "extract_value" builder in
+        let extract_array = L.build_gep extract_value [| i' |] "extract_array" builder in  
+        L.build_load extract_array s builder 
         
       | SArrayAssign(v, i, e) -> let e' = expr builder e in 
         let i' = expr builder (i) in
