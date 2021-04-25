@@ -1,0 +1,7 @@
+func int main() {
+  note[] arr;
+  arr = [<1, "wh">, <2, "wh">, <3, "wh">];
+  render(arr, "test.mid", 1, 120);
+  printmidi("test.mid");
+  return 0;
+}

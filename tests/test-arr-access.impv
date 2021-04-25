@@ -1,0 +1,12 @@
+func int main() {
+  int[] int_arr;
+  note[] note_arr;
+
+  int_arr = [1, 2, 3, 4, 5];
+  printi(int_arr[1]);
+
+  note_arr = [<1, "wh">, <5, "wh">];
+  printn(note_arr[1]);
+  
+  return 0;
+}

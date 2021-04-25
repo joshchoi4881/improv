@@ -1184,6 +1184,35 @@ void midiReadFreeMessage(MIDI_MSG *pMsg)
 	pMsg->data = NULL;
 }
 
+void TestEventList(const char *pFilename)
+{
+MIDI_FILE *mf = midiFileOpen(pFilename);
+
+	if (mf)
+		{
+		MIDI_MSG msg;
+		int i, iNum;
+		unsigned int j;
+
+		midiReadInitMessage(&msg);
+		iNum = midiReadGetNumTracks(mf);
+		for(i=0;i<iNum;i++)
+			{
+			printf("# Track %d\n", i);
+			while(midiReadGetNextMessage(mf, i, &msg))
+				{
+				printf("\t");
+				for(j=0;j<msg.iMsgSize;j++)
+					printf("%.2x ", msg.data[j]);
+				printf("\n");
+				}
+			}
+
+		midiReadFreeMessage(&msg);
+		midiFileClose(mf);
+		}
+}
+
 /* 
 testing printbig function 
 */
@@ -1254,6 +1283,15 @@ void printn(Note note){
   printf("<%d, %s>\n", note.tone, rhythm_map[atoi(note.rhythm)]);
 }
 
+void printa(int len, int *arr){
+  int i;
+  printf("[");
+  for(i = 0; i < len; i++, arr++){
+      printf("%d,", *arr);
+  }
+  printf("]");
+}
+
 int* getKey(int key){
   switch(key){
     case CMAJ:
@@ -1307,29 +1345,34 @@ int* getKey(int key){
   } 
 }
 
-// /* create midi file */
-// void render_backend(Note* notes, int size, char* filename, int key[], int tempo){
-//   MIDI_FILE *mf;
-//   int i;
+/* create midi file */
+void render_backend(Note* notes, int size, char* filename, int key[], int tempo){
+  MIDI_FILE *mf;
+  int i;
 
-//   int rhythms[] = {MIDI_NOTE_BREVE, MIDI_NOTE_MINIM, MIDI_NOTE_CROCHET, MIDI_NOTE_QUAVER, MIDI_NOTE_SEMIQUAVER}; 
+  int rhythms[] = {MIDI_NOTE_BREVE, MIDI_NOTE_MINIM, MIDI_NOTE_CROCHET, MIDI_NOTE_QUAVER, MIDI_NOTE_SEMIQUAVER}; 
   
-//   if ((mf = midiFileCreate(filename, TRUE))){
-// 		midiSongAddTempo(mf, 1, tempo);
-// 		midiFileSetTracksDefaultChannel(mf, 1, MIDI_CHANNEL_1);
-// 		midiTrackAddProgramChange(mf, 1, MIDI_PATCH_ELECTRIC_GUITAR_JAZZ);
-// 		midiSongAddSimpleTimeSig(mf, 1, 4, MIDI_NOTE_CROCHET);
+  if ((mf = midiFileCreate(filename, TRUE))){
+		midiSongAddTempo(mf, 1, tempo);
+		midiFileSetTracksDefaultChannel(mf, 1, MIDI_CHANNEL_1);
+		midiTrackAddProgramChange(mf, 1, MIDI_PATCH_ELECTRIC_GUITAR_JAZZ);
+		midiSongAddSimpleTimeSig(mf, 1, 4, MIDI_NOTE_CROCHET);
 
-//     for(i = 0; i < size; i++, notes++){
-//       printn(notes);
-//       midiTrackAddNote(mf, 1, key[notes->tone], rhythms[atoi(notes->rhythm)], MIDI_VOL_HALF, TRUE, FALSE);
-//     }
+    for(i = 0; i < size; i++, notes++){
+      /* printn(*notes); */
+      midiTrackAddNote(mf, 1, key[notes->tone], rhythms[atoi(notes->rhythm)], MIDI_VOL_HALF, TRUE, FALSE);
+    }
 
-// 		midiFileClose(mf);
-// 	}
-// }
+		midiFileClose(mf);
+    printf("finished creating %s!\n", filename);
+	}
+}
 
-// void render(Note_Arr* noteArr, char* filename, int key, int tempo){
-//   int *keyNotes = getKey(key);
-//   render_backend(noteArr->arr, noteArr->len, filename, keyNotes, tempo);
-// }
+void render(Note_Arr noteArr, char* filename, int key, int tempo){
+  int *keyNotes = getKey(key);
+  render_backend(noteArr.arr, noteArr.len, filename, keyNotes, tempo);
+}
+
+void printmidi(char* filename){
+  TestEventList(filename);
+}

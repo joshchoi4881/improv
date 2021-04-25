@@ -1,0 +1,6 @@
+func int main() {
+  int[] int_arr;
+  int_arr = [1, 2, 3, 4, 5];
+  printa(int_arr);
+  return 0;
+}

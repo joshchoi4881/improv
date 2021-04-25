@@ -1,0 +1,12 @@
+finished creating test.mid!
+# Track 0
+	ff 51 03 07 a1 20 
+	c0 1a 
+	ff 58 04 04 02 18 08 
+	90 43 40 
+	80 43 00 
+	90 40 40 
+	80 40 00 
+	90 3e 40 
+	80 3e 00 
+	ff 2f 00 

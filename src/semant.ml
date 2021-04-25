@@ -37,8 +37,7 @@ let check (globals, functions) =
       params = [(ty, "x")];
       vars = []; 
       body = [] } map
-    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note); ("printbig", Int)]; 
-    (* ("printa", ty) *)
+    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note); ("printbig", Int); ("printmidi", String); ("printa", Array(Int))]; 
   in
 
   (* TODO: add render function, printarray *)

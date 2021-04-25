@@ -75,11 +75,20 @@ let translate (globals, functions) =
   let printn_func : L.llvalue =
     L.declare_function "printn" printn_t the_module in
 
+  let printa_t : L.lltype =
+    L.function_type i32_t [| ltype_of_typ(A.Array(Int)) |] in
+  let printa_func : L.llvalue =
+    L.declare_function "printa" printa_t the_module in
+
   let render_t : L.lltype =
     L.function_type i32_t [| ltype_of_typ(A.Array(Note)) ; string_t ; i32_t ; i32_t |] in
   let render_func : L.llvalue =
     L.declare_function "render" render_t the_module in
-  
+
+  let printmidi_t : L.lltype =
+    L.function_type i32_t [| string_t |] in
+  let printmidi_func : L.llvalue =
+    L.declare_function "printmidi" printmidi_t the_module in
   
 (*     
   let stringsubstring_t : L.lltype =
@@ -104,10 +113,7 @@ let translate (globals, functions) =
     let builder = L.builder_at_end context (L.entry_block the_function) in
 
     let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder
-    and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder 
-    (* pointer to notes?? 
-    and note_format_str = L.build_global_stringptr 
-    *) in
+    and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
 
     (* Construct the function's "locals": param arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -250,9 +256,15 @@ let translate (globals, functions) =
       | SCall ("printn", [e]) -> 
         L.build_call printn_func [| (expr builder e) |]
           "printn" builder
-      | SCall ("render", [e]) -> 
-        L.build_call render_func [| (expr builder e) ; (expr builder e) ; (expr builder e) ; (expr builder e) |]
+      | SCall ("printa", [e]) -> 
+        L.build_call printa_func [| (expr builder e) |]
+          "printa" builder
+      | SCall ("render", [arr ; file ; key ; tempo]) -> 
+        L.build_call render_func [| (expr builder arr) ; (expr builder file) ; (expr builder key) ; (expr builder tempo) |]
           "render" builder
+      | SCall ("printmidi", [e]) -> 
+        L.build_call printmidi_func [| (expr builder e) |]
+          "printmidi" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (expr builder) (List.rev args)) in
