@@ -158,7 +158,7 @@ let translate (globals, functions) =
       | SLitRhythm s -> L.build_global_stringptr s "str" builder
       | SLitNote (i, s) -> L.const_struct context [| L.const_int i32_t i ; L.build_global_stringptr s "str" builder |]
       | SLitArray l  -> let len = L.const_int i32_t (List.length l) in
-                        let el = List.map (fun e' -> expr builder e') l in
+                        let el = List.map (fun e' -> expr builder e') (List.rev l) in
                         let arr_mem = L.build_array_malloc (L.type_of (List.hd el)) len "tmp" builder in
                         List.iter (fun idx ->
                           let arr_ptr = (L.build_gep arr_mem [| L.const_int i32_t idx |] "tmp2" builder) in

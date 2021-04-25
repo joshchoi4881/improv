@@ -1287,7 +1287,11 @@ void printa(int len, int *arr){
   int i;
   printf("[");
   for(i = 0; i < len; i++, arr++){
-      printf("%d,", *arr);
+    if(i == len-1){
+      printf("%d", *arr);
+    } else{
+      printf("%d, ", *arr);
+    }
   }
   printf("]");
 }
