@@ -1,125 +1,143 @@
-/usr/bin/lli
+/usr/local/opt/llvm/bin/lli
 
 ###### Testing test-arith
 ./src/improv.native tests/test-arith.impv > test-arith.ll
-llc -relocation-model=pic test-arith.ll > test-arith.s
-cc -o test-arith.exe test-arith.s
-./test-arith.exe
-diff -b test-arith.out tests/test-arith.out > test-arith.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-arr-access
+./src/improv.native tests/test-arr-access.impv > test-arr-access.ll
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-arr-assign
+./src/improv.native tests/test-arr-assign.impv > test-arr-assign.ll
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-arr
 ./src/improv.native tests/test-arr.impv > test-arr.ll
-llc -relocation-model=pic test-arr.ll > test-arr.s
-cc -o test-arr.exe test-arr.s
-./test-arr.exe
-diff -b test-arr.out tests/test-arr.out > test-arr.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-fib
 ./src/improv.native tests/test-fib.impv > test-fib.ll
-llc -relocation-model=pic test-fib.ll > test-fib.s
-cc -o test-fib.exe test-fib.s
-./test-fib.exe
-diff -b test-fib.out tests/test-fib.out > test-fib.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-for
 ./src/improv.native tests/test-for.impv > test-for.ll
-llc -relocation-model=pic test-for.ll > test-for.s
-cc -o test-for.exe test-for.s
-./test-for.exe
-diff -b test-for.out tests/test-for.out > test-for.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-gcd-recursive
 ./src/improv.native tests/test-gcd-recursive.impv > test-gcd-recursive.ll
-llc -relocation-model=pic test-gcd-recursive.ll > test-gcd-recursive.s
-cc -o test-gcd-recursive.exe test-gcd-recursive.s
-./test-gcd-recursive.exe
-diff -b test-gcd-recursive.out tests/test-gcd-recursive.out > test-gcd-recursive.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-gcd
 ./src/improv.native tests/test-gcd.impv > test-gcd.ll
-llc -relocation-model=pic test-gcd.ll > test-gcd.s
-cc -o test-gcd.exe test-gcd.s
-./test-gcd.exe
-diff -b test-gcd.out tests/test-gcd.out > test-gcd.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-if
 ./src/improv.native tests/test-if.impv > test-if.ll
-llc -relocation-model=pic test-if.ll > test-if.s
-cc -o test-if.exe test-if.s
-./test-if.exe
-diff -b test-if.out tests/test-if.out > test-if.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-note
 ./src/improv.native tests/test-note.impv > test-note.ll
-llc -relocation-model=pic test-note.ll > test-note.s
-cc -o test-note.exe test-note.s
-./test-note.exe
-diff -b test-note.out tests/test-note.out > test-note.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-printa
+./src/improv.native tests/test-printa.impv > test-printa.ll
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-printbig
+./src/improv.native tests/test-printbig.impv > test-printbig.ll
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-printi
 ./src/improv.native tests/test-printi.impv > test-printi.ll
-llc -relocation-model=pic test-printi.ll > test-printi.s
-cc -o test-printi.exe test-printi.s
-./test-printi.exe
-diff -b test-printi.out tests/test-printi.out > test-printi.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-printmidi
+./src/improv.native tests/test-printmidi.impv > test-printmidi.ll
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-printn
+./src/improv.native tests/test-printn.impv > test-printn.ll
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-prints
 ./src/improv.native tests/test-prints.impv > test-prints.ll
-llc -relocation-model=pic test-prints.ll > test-prints.s
-cc -o test-prints.exe test-prints.s
-./test-prints.exe
-diff -b test-prints.out tests/test-prints.out > test-prints.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
+
+###### Testing test-render
+./src/improv.native tests/test-render.impv > test-render.ll
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-var-int
 ./src/improv.native tests/test-var-int.impv > test-var-int.ll
-llc -relocation-model=pic test-var-int.ll > test-var-int.s
-cc -o test-var-int.exe test-var-int.s
-./test-var-int.exe
-diff -b test-var-int.out tests/test-var-int.out > test-var-int.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-var-string
 ./src/improv.native tests/test-var-string.impv > test-var-string.ll
-llc -relocation-model=pic test-var-string.ll > test-var-string.s
-cc -o test-var-string.exe test-var-string.s
-./test-var-string.exe
-diff -b test-var-string.out tests/test-var-string.out > test-var-string.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
 ###### Testing test-while
 ./src/improv.native tests/test-while.impv > test-while.ll
-llc -relocation-model=pic test-while.ll > test-while.s
-cc -o test-while.exe test-while.s
-./test-while.exe
-diff -b test-while.out tests/test-while.out > test-while.diff
-###### SUCCESS
+./testall.sh: line 62: ./src/improv.native: No such file or directory
+###### FAILED
 
-###### Testing fail-arrtype
-./src/improv.native < tests/fail-arrtype.impv 2> fail-arrtype.err >> testall.log
-diff -b fail-arrtype.err tests/fail-arrtype.err > fail-arrtype.diff
-###### SUCCESS
+###### Testing fail-duplicate-function
+./src/improv.native < tests/fail-duplicate-function.impv 2> fail-duplicate-function.err >> testall.log
+diff -b fail-duplicate-function.err tests/fail-duplicate-function.err > fail-duplicate-function.diff
+FAILED fail-duplicate-function.err differs from tests/fail-duplicate-function.err
+###### FAILED
 
-###### Testing fail-returntype
-./src/improv.native < tests/fail-returntype.impv 2> fail-returntype.err >> testall.log
-diff -b fail-returntype.err tests/fail-returntype.err > fail-returntype.diff
-###### SUCCESS
+###### Testing fail-inconsistent-arr-type
+./src/improv.native < tests/fail-inconsistent-arr-type.impv 2> fail-inconsistent-arr-type.err >> testall.log
+diff -b fail-inconsistent-arr-type.err tests/fail-inconsistent-arr-type.err > fail-inconsistent-arr-type.diff
+FAILED fail-inconsistent-arr-type.err differs from tests/fail-inconsistent-arr-type.err
+###### FAILED
+
+###### Testing fail-inconsistent-return-type
+./src/improv.native < tests/fail-inconsistent-return-type.impv 2> fail-inconsistent-return-type.err >> testall.log
+diff -b fail-inconsistent-return-type.err tests/fail-inconsistent-return-type.err > fail-inconsistent-return-type.diff
+FAILED fail-inconsistent-return-type.err differs from tests/fail-inconsistent-return-type.err
+###### FAILED
 
 ###### Testing fail-rhythm
 ./src/improv.native < tests/fail-rhythm.impv 2> fail-rhythm.err >> testall.log
 diff -b fail-rhythm.err tests/fail-rhythm.err > fail-rhythm.diff
-###### SUCCESS
+FAILED fail-rhythm.err differs from tests/fail-rhythm.err
+###### FAILED
 
 ###### Testing fail-tone
 ./src/improv.native < tests/fail-tone.impv 2> fail-tone.err >> testall.log
 diff -b fail-tone.err tests/fail-tone.err > fail-tone.diff
-###### SUCCESS
+FAILED fail-tone.err differs from tests/fail-tone.err
+###### FAILED
+
+###### Testing fail-undeclared-identifier
+./src/improv.native < tests/fail-undeclared-identifier.impv 2> fail-undeclared-identifier.err >> testall.log
+diff -b fail-undeclared-identifier.err tests/fail-undeclared-identifier.err > fail-undeclared-identifier.diff
+FAILED fail-undeclared-identifier.err differs from tests/fail-undeclared-identifier.err
+###### FAILED
+
+###### Testing fail-undefined-function
+./src/improv.native < tests/fail-undefined-function.impv 2> fail-undefined-function.err >> testall.log
+diff -b fail-undefined-function.err tests/fail-undefined-function.err > fail-undefined-function.diff
+FAILED fail-undefined-function.err differs from tests/fail-undefined-function.err
+###### FAILED

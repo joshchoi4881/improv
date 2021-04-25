@@ -1,0 +1,6 @@
+func int main() {
+  note[] arr;
+  arr = [<2, "qr">, <2, "qr">, <2, "qr">, <5, "qr">, <1, "qr">, <1, "qr">, <5, "hf">, <4, "qr">, <4, "qr">, <3, "qr">, <3, "qr">, <2, "hf">];
+  render(arr, "test.mid", 1, 120);
+  return 0;
+}
