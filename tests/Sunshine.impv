@@ -1,0 +1,5 @@
+func int main() {
+    note[] riff = [(6, qr), (6, qr), (5, qr), (6, qr), (4, qr), (3, qr), (2, qr), (6, qr), (1, hf), (6, qr)];
+    render(riff, "test.mid", 1, 120);
+    return 0;
+}
