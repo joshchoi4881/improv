@@ -1,4 +1,0 @@
-1c1
-< ./testAll.sh: line 72: ./src/improv.native: No such file or directory
----
-> Fatal error: exception Failure("unrecognized function add")
