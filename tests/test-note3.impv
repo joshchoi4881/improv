@@ -1,0 +1,8 @@
+func int main() {
+  note n;
+  int[] i;
+  i = [1, 2];
+  n = <i[1], "wh">;
+  printn(n);
+  return 0;
+}

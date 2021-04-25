@@ -1,30 +1,3 @@
-func int[] quicksort(int arr[], int low, int high) {
-  if(low < high) {
-    int pi = partition(arr, low, high);
-    arr = quickSort(arr, low, pi - 1);
-    arr = quickSort(arr, pi + 1, high);
-  }
-  printa(arr);
-  return arr;
-}
-
-func int partition(int[] arr, int high, int low) {
-  int pivot = arr[high];
-  int i = (low - 1);
-  for(int j = low; j <= high - 1; j++) {
-    if(arr[j] < pivot) {
-      i = i + 1;
-      int temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp; 
-    }
-  }
-  int temp = arr[i + 1];
-  arr[i + 1] = arr[high];
-  arr[high] = temp;
-  return(i + 1);
-}
-
 func int[] bubbleSort(int[] a, int n){
   int i;
   int j;
@@ -68,6 +41,44 @@ func int[] selectionSort(int[] a, int n){
   return a;
 }
 
+
+func note[] convertIntToNote(int[] a, int n){
+  int i;
+  note[] notes;
+  note tmp;
+  int val;
+
+  notes = [<1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">];
+  
+  for(i = 0; i < n-1; i = i+1){
+
+    tmp = <a[i]%5, "hf">;
+    notes[i] = tmp;
+  }
+
+  return notes;
+}
+
+
+
+func int main() {
+  int[] a;
+  note[] notes;
+
+  a = [23, 11, 39, 44, 2, 16, 52];
+  
+  render(convertIntToNote(a, 7), "before.mid", 1, 160);
+
+  bubbleSort(a, 7);
+
+  render(convertIntToNote(a, 7), "after.mid", 1, 160);
+
+  return 0;
+}
+
+
+
+/*
 func int main() {
   int[] a;
 
@@ -76,9 +87,6 @@ func int main() {
 
   a = [23, 11, 39, 44, 2, 16, 52];
   selectionSort(a, 7);
-
-  a = [23, 11, 39, 44, 2, 16, 52];
-  quickSort(a, 7);
-
   return 0;
 }
+*/
