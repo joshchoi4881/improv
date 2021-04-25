@@ -9,7 +9,7 @@ and sx =
   | SLitString of string
   | SLitTone of int 
   | SLitRhythm of string 
-  | SLitNote of int * string (* SLitTone, SLitRhythm *)
+  | SLitNote of sexpr * string (* SLitTone, SLitRhythm *)
   | SLitArray of sexpr list 
   | SId of string
   | SBinop of sexpr * op * sexpr
@@ -49,7 +49,7 @@ let rec string_of_sexpr (t, e) =
   | SLitString(s) -> s
   | SLitTone(t) -> string_of_int t
   | SLitRhythm(r) -> r
-  | SLitNote(t, r) -> "<" ^ string_of_int t ^ " " ^ r ^ ">"
+  | SLitNote(t, r) -> "<" ^ string_of_sexpr t ^ ", " ^ r ^ ">"
   | SLitArray(el) -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
   | SId(s) -> s
   | SBinop(e1, o, e2) ->

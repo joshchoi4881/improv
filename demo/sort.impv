@@ -1,0 +1,53 @@
+/* Generating sound of different sorting algorithms */
+
+func int[] quickSort(int[] a){
+
+}
+
+func note[] convertIntToNote(int[] a, int n){
+  int i;
+  note[] notes;
+  note tmp;
+  notes = [<1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">];
+
+  for(i = 0; i < n-1; i = i+1){
+    tmp = <a[i]%5, "hf">;
+    notes[i] = tmp;
+  }
+
+  return notes;
+}
+
+func int[] bubbleSort(int[] a, int n){
+  int i;
+  int j;
+  int tmp;
+
+  for (i = 0; i < n-1; i = i+1){
+    for (j = 0; j < n-i-1; j = j+1){
+      if (a[j] > a[j+1]){
+        tmp = a[j];
+        a[j] = a[j+1];
+        a[j+1] = tmp;
+        printa(a);
+      }
+    } 
+  } 
+  printa(a);
+  return a;
+}
+
+func int main() {
+  int[] a;
+  note[] notes;
+
+  a = [23, 11, 39, 44, 2, 16, 52];
+
+  render(convertIntToNote(a, 7), "before.mid", 1, 120);
+
+  bubbleSort(a, 7);
+
+  render(convertIntToNote(a, 7), "after.mid", 1, 120);
+
+  return 0;
+}

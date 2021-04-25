@@ -1293,7 +1293,7 @@ void printa(int len, int *arr){
       printf("%d, ", *arr);
     }
   }
-  printf("]");
+  printf("]\n");
 }
 
 int* getKey(int key){

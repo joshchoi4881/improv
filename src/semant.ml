@@ -97,28 +97,19 @@ let check (globals, functions) =
     in
 
     (* Raise exception if given tone is not valid (only 1-6) *)
-    let check_tone t = 
+    let check_tone = function
+      (Int, t) -> (Int, t)
+
+      (* how to check if t is in between values ?? *)
+         
+        (* if t >= 0 && t <= 5 then (Int, t *)
+      | _ -> raise (Failure ("invalid tone assignment, must be int expression")) 
+(*       
       if t >= 0 && t <= 5 then t
-      else raise (Failure ("invalid tone assignment, must be within 0-5"))
+      else raise (Failure ("invalid tone assignment, must be within 0-5"))  *)
     in 
 
     (* Raise exception if given rhythm is not valid *)
-
-      (* TODO: map strings to integers, if not in map then invalid 
-    let check_rhythm r = 
-      if String.equal r "wh" || String.equal r "hf" || String.equal r "qr" || String.equal r "ei" || String.equal r "sx" then r
-      else raise (Failure ("invalid rhythm assignment " ^ r))
-    in *)
-    (*
-    let check_rhythm r =  
-        if r String.equal "wh" then 0
-        if r String.equal "hf" then 1
-        if r String.equal "qr" then 2
-        if r String.equal "ei" then 4   
-        if r String.equal "sx" then 5   
-        else raise (Failure ("invalid rhythm assignment " ^ r))
-    in *)
-
     let check_rhythm r = 
       match r with
         | "wh" -> "0" 
@@ -156,9 +147,15 @@ let check (globals, functions) =
         LitInt  l -> (Int, SLitInt l)
       | LitString l -> (String, SLitString l)
       | LitBool l  -> (Bool, SLitBool l)
-      | LitTone t -> (Tone, SLitTone (check_tone t))
+      (* | LitTone t -> (Tone, SLitTone (check_tone t)) *)
       | LitRhythm r -> (Rhythm, SLitRhythm (check_rhythm r))
-      | LitNote (t, r) -> (Note, SLitNote(check_tone t, check_rhythm r)) 
+      | LitNote (t, r) -> 
+        let (typ, t') = expr t in 
+        (* let rec check_int typ = 
+          match typ with 
+          | Int -> Int
+          | _ -> raise (Failure ("invalid tone assignment, must be int expression")) *)
+        (Note, SLitNote(check_tone(typ, t'), check_rhythm r)) 
       | LitArray l -> let array = List.map expr l in
           let rec type_check = function
             (t1, _) :: [] -> (Array(t1), SLitArray(array))

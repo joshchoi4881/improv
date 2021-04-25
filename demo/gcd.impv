@@ -2,19 +2,19 @@ func note[] gcd1(int x, int y){
   note[] result;
   int a;
 
-  while x > 0 {
-    result $ <(x%6), hf>;
-    result $ <(y%6), hf>;
+  while (x > 0) {
+    result $ [<(x%6), hf>];
+    result $ [<(y%6), hf>];
     a = x % y;
     x = y;
     y = c;
   }
 
-  result $ <(y%6), wh>;
+  result $ [<(y%6), wh>];
   return result;
 }
 
-
+/* 
 // idk if this makes sense ??? 
 func note[] gcd2(int x, int y){
   note[] result;
@@ -42,7 +42,7 @@ func note[] gcd2(int x, int y){
   // should reverse it? 
 
   return result;
-}
+} */
 
 func int main() {
   note[] gcd1;
@@ -51,8 +51,8 @@ func int main() {
   gcd1 = gcd1(98, 56);
   gcd2 = gcd2(98, 56);
 
-  render(gcd1, "gcd1", "CMAJ", 96);
-  render(gcd2, "gcd2", "CMAJ", 96);
+  render(gcd1, "gcd1.mid", 1, 96);
+  render(gcd2, "gcd2.mid", 1, 96);
 
   return 0;
 }

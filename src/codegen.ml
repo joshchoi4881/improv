@@ -75,7 +75,6 @@ let translate (globals, functions) =
   let printbig_func : L.llvalue =
       L.declare_function "printbig" printbig_t the_module in
 
-  (* TODO: add render function, printarray, printnote *)
   let printn_t : L.lltype =
     L.function_type i32_t [| ltype_of_typ(A.Note) |] in
   let printn_func : L.llvalue =
@@ -95,12 +94,6 @@ let translate (globals, functions) =
     L.function_type i32_t [| string_t |] in
   let printmidi_func : L.llvalue =
     L.declare_function "printmidi" printmidi_t the_module in
-  
-(*     
-  let stringsubstring_t : L.lltype =
-      L.function_type string_t [| string_t ; i32_t ; i32_t |] in
-  let stringsubstring_func : L.llvalue =
-      L.declare_function "substring" stringsubstring_t the_module in *)
 
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
@@ -155,6 +148,23 @@ let translate (globals, functions) =
       else L.build_load (L.build_gep (lookup s) [| i1; i2 |] s builder) s builder
     in 
 
+    let build_array len el = 
+      let arr_mem = L.build_array_malloc (L.type_of (List.hd el)) len "tmp" builder in
+        List.iter (fun idx ->
+          let arr_ptr = (L.build_gep arr_mem [| L.const_int i32_t idx |] "tmp2" builder) in
+          let e_val = List.nth el idx in
+          ignore (L.build_store e_val arr_ptr builder)
+        ) (int_range (List.length el));
+        let len_arr_ptr = L.struct_type context [| i32_t ; L.pointer_type (L.type_of (List.hd el)) |] in
+        let struc_ptr = L.build_malloc len_arr_ptr "arr_literal" builder in
+        let first_store = L.build_struct_gep struc_ptr 0 "first" builder in
+        let second_store = L.build_struct_gep struc_ptr 1 "second" builder in
+        ignore (L.build_store len first_store builder);
+        ignore (L.build_store arr_mem second_store builder);
+        let result = L.build_load struc_ptr "actual_arr_literal" builder in
+      result
+    in 
+
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
 	      SLitInt i -> L.const_int i32_t i
@@ -162,32 +172,29 @@ let translate (globals, functions) =
       | SLitBool b  -> L.const_int i1_t (if b then 1 else 0)
       | SLitTone i -> L.const_int i32_t i
       | SLitRhythm s -> L.build_global_stringptr s "str" builder
-      | SLitNote (i, s) -> L.const_struct context [| L.const_int i32_t i ; L.build_global_stringptr s "str" builder |]
+
+      (* note struct type *)
+      | SLitNote (i, s) -> 
+        let i'= expr builder i in 
+        let s' = L.build_global_stringptr s "str" builder in 
+        let struc =  L.struct_type context [| i32_t ; string_t |] in 
+        let struct_ptr = L.build_malloc struc "struct_mem" builder in 
+        let first_store = L.build_struct_gep struct_ptr 0 "tone" builder in 
+        let second_store = L.build_struct_gep struct_ptr 1 "rhythm" builder in 
+        ignore (L.build_store i' first_store builder);
+        ignore (L.build_store s' second_store builder); 
+        let result = L.build_load struct_ptr "struct_literal" builder in result
+
       | SLitArray l  -> let len = L.const_int i32_t (List.length l) in
                         let el = List.map (fun e' -> expr builder e') (List.rev l) in
-                        let arr_mem = L.build_array_malloc (L.type_of (List.hd el)) len "tmp" builder in
-                        List.iter (fun idx ->
-                          let arr_ptr = (L.build_gep arr_mem [| L.const_int i32_t idx |] "tmp2" builder) in
-                          let e_val = List.nth el idx in
-                          ignore (L.build_store e_val arr_ptr builder)
-                        ) (int_range (List.length l));
-
-                        let len_arr_ptr = L.struct_type context [| i32_t ; L.pointer_type (L.type_of (List.hd el)) |] in
-                        let struc_ptr = L.build_malloc len_arr_ptr "arr_literal" builder in
-                        let first_store = L.build_struct_gep struc_ptr 0 "first" builder in
-                        let second_store = L.build_struct_gep struc_ptr 1 "second" builder in
-                        ignore (L.build_store len first_store builder);
-                        ignore (L.build_store arr_mem second_store builder);
-                        let result = L.build_load struc_ptr "actual_arr_literal" builder in
-                        result
-
+                        build_array len el
       | SArrayAccess(s, ind1) ->
         let i' = expr builder ind1 in 
         let v' = L.build_load (lookup s) s builder in 
         let extract_value = L.build_extractvalue v' 1 "extract_value" builder in
         let extract_array = L.build_gep extract_value [| i' |] "extract_array" builder in  
         let result = L.build_load extract_array s builder in result
-
+        
       | SArrayAssign(v, i, e) -> let e' = expr builder e in 
         let i' = expr builder i in
         let v' = L.build_load (lookup v) v builder in 

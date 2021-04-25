@@ -4,5 +4,7 @@ func int main() {
 
   int_arr = [1, 2];
   note_arr = [<1, "wh">, <5, "wh">];
+
+  printa(int_arr);
   return 0;
 }

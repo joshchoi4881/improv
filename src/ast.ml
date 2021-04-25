@@ -17,7 +17,7 @@ type expr =
   | LitString of string
   | LitTone of int
   | LitRhythm of string 
-  | LitNote of int * string (* LitTone, LitRhythm *)
+  | LitNote of expr * string (* LitTone, LitRhythm *)
   | LitArray of expr list 
   | Id of string
   | Binop of expr * op * expr
@@ -76,7 +76,7 @@ let rec string_of_expr = function
   | LitString(s) -> s
   | LitTone(t) -> string_of_int t
   | LitRhythm(r) -> r
-  | LitNote(t, r) -> "<" ^ string_of_int t ^ " " ^ r ^ ">"
+  | LitNote(t, r) -> "<" ^ string_of_expr t ^ ", " ^ r ^ ">"
   | LitArray(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
   | Id(s) -> s
   | Binop(e1, o, e2) ->
