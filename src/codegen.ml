@@ -69,7 +69,6 @@ let translate (globals, functions) =
   let printbig_func : L.llvalue =
       L.declare_function "printbig" printbig_t the_module in
 
-  (* TODO: add render function, printarray, printnote *)
   let printn_t : L.lltype =
     L.function_type i32_t [| ltype_of_typ(A.Note) |] in
   let printn_func : L.llvalue =
@@ -89,12 +88,6 @@ let translate (globals, functions) =
     L.function_type i32_t [| string_t |] in
   let printmidi_func : L.llvalue =
     L.declare_function "printmidi" printmidi_t the_module in
-  
-(*     
-  let stringsubstring_t : L.lltype =
-      L.function_type string_t [| string_t ; i32_t ; i32_t |] in
-  let stringsubstring_func : L.llvalue =
-      L.declare_function "substring" stringsubstring_t the_module in *)
 
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
