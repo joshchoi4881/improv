@@ -6,7 +6,7 @@
 %token LPAREN RPAREN LBRACK RBRACK LCURLY RCURLY
 %token COMMA  
 
-%token PLUS MINUS TIMES DIVIDE MOD
+%token PLUS MINUS TIMES DIVIDE MOD CONCAT
 // %token CONCAT BIND DUP
 %token EQ NEQ LT LTE GT GTE 
 %token AND OR NOT 
@@ -33,7 +33,7 @@
 %left AND 
 %left EQ NEQ
 %nonassoc LT LTE GT GTE
-// %left CONCAT
+%left CONCAT
 // %nonassoc BIND 
 // %nonassoc DUP
 %left COMMA 
@@ -140,9 +140,10 @@ expr:
   /* function call */
   | ID LPAREN args_opt RPAREN { Call($1, $3) }
 
-  /* array access & assign */
+  /* array access, assign, append */
   | ID LBRACK expr RBRACK { ArrayAccess($1, $3) }
   | ID LBRACK expr RBRACK ASSIGN expr { ArrayAssign($1, $3, $6) }
+  | expr CONCAT expr { ArrayAppend($1, $3) }
 
 args_opt:
   | /* nothing */ { [] }

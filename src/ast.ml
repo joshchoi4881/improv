@@ -26,6 +26,7 @@ type expr =
   | Call of string * expr list
   | ArrayAccess of string * expr
   | ArrayAssign of string * expr * expr
+  | ArrayAppend of expr * expr 
   | NoExpr
 
 type stmt =
@@ -86,6 +87,7 @@ let rec string_of_expr = function
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
   | ArrayAssign(v, l, e) -> v ^ "[" ^ string_of_expr l ^ "]" ^ " = " ^ string_of_expr e
+  | ArrayAppend(a1, a2) -> "[" ^ string_of_expr a1 ^ "] $ [" ^ string_of_expr a2 ^ "]"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
