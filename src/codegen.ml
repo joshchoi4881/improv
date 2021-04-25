@@ -142,6 +142,23 @@ let translate (globals, functions) =
       else L.build_load (L.build_gep (lookup s) [| i1; i2 |] s builder) s builder
     in 
 
+    let build_array len el = 
+      let arr_mem = L.build_array_malloc (L.type_of (List.hd el)) len "tmp" builder in
+        List.iter (fun idx ->
+          let arr_ptr = (L.build_gep arr_mem [| L.const_int i32_t idx |] "tmp2" builder) in
+          let e_val = List.nth el idx in
+          ignore (L.build_store e_val arr_ptr builder)
+        ) (int_range (List.length el));
+        let len_arr_ptr = L.struct_type context [| i32_t ; L.pointer_type (L.type_of (List.hd el)) |] in
+        let struc_ptr = L.build_malloc len_arr_ptr "arr_literal" builder in
+        let first_store = L.build_struct_gep struc_ptr 0 "first" builder in
+        let second_store = L.build_struct_gep struc_ptr 1 "second" builder in
+        ignore (L.build_store len first_store builder);
+        ignore (L.build_store arr_mem second_store builder);
+        let result = L.build_load struc_ptr "actual_arr_literal" builder in
+      result
+    in 
+
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
 	      SLitInt i -> L.const_int i32_t i
@@ -152,22 +169,7 @@ let translate (globals, functions) =
       | SLitNote (i, s) -> L.const_struct context [| L.const_int i32_t i ; L.build_global_stringptr s "str" builder |]
       | SLitArray l  -> let len = L.const_int i32_t (List.length l) in
                         let el = List.map (fun e' -> expr builder e') (List.rev l) in
-                        let arr_mem = L.build_array_malloc (L.type_of (List.hd el)) len "tmp" builder in
-                        List.iter (fun idx ->
-                          let arr_ptr = (L.build_gep arr_mem [| L.const_int i32_t idx |] "tmp2" builder) in
-                          let e_val = List.nth el idx in
-                          ignore (L.build_store e_val arr_ptr builder)
-                        ) (int_range (List.length l));
-
-                        let len_arr_ptr = L.struct_type context [| i32_t ; L.pointer_type (L.type_of (List.hd el)) |] in
-                        let struc_ptr = L.build_malloc len_arr_ptr "arr_literal" builder in
-                        let first_store = L.build_struct_gep struc_ptr 0 "first" builder in
-                        let second_store = L.build_struct_gep struc_ptr 1 "second" builder in
-                        ignore (L.build_store len first_store builder);
-                        ignore (L.build_store arr_mem second_store builder);
-                        let result = L.build_load struc_ptr "actual_arr_literal" builder in
-                        result
-
+                        build_array len el
       | SArrayAccess(s, ind1) ->
         let i'= expr builder ind1 in 
         let v' = L.build_load (lookup s) s builder in 
