@@ -1,10 +1,14 @@
 func int main() {
   note n;
   n = <0, "wh">;
-  n = <1, "wh">;
-  n = <2, "hf">;
-  n = <3, "qr">;
-  n = <4, "ei">;
-  n = <5, "sx">;
+  printn(n);
+  n = <1, "hf">;
+  printn(n);
+  n = <2, "qr">;
+  printn(n);
+  n = <3, "ei">;
+  printn(n);
+  n = <4, "sx">;
+  printn(n);
   return 0;
 }
