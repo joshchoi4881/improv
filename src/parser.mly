@@ -167,7 +167,7 @@ lit_rhythm:
   | LIT_STRING { LitRhythm($1) } */
 
 lit_note:
-  | LT LIT_INT COMMA LIT_STRING GT  { LitNote($2, $4) }
+  | LT expr COMMA LIT_STRING GT  { LitNote($2, $4) }
 
 lit_array:
   | LBRACK items_list RBRACK { LitArray($2) }

@@ -166,7 +166,20 @@ let translate (globals, functions) =
       | SLitBool b  -> L.const_int i1_t (if b then 1 else 0)
       | SLitTone i -> L.const_int i32_t i
       | SLitRhythm s -> L.build_global_stringptr s "str" builder
-      | SLitNote (i, s) -> L.const_struct context [| L.const_int i32_t i ; L.build_global_stringptr s "str" builder |]
+      | SLitNote (i, s) -> 
+        let i'= expr builder i in 
+        let s' = L.build_global_stringptr s "str" builder in 
+        let struc =  L.struct_type context [| i32_t ; string_t |] in 
+        let struct_ptr = L.build_malloc struc "struct_mem" builder in 
+        let first_store = L.build_struct_gep struct_ptr 0 "tone" builder in 
+        let second_store = L.build_struct_gep struct_ptr 1 "rhythm" builder in 
+        ignore (L.build_store i' first_store builder);
+        ignore (L.build_store s' second_store builder); 
+        let result = L.build_load struct_ptr "struct_literal" builder in
+      result
+
+       (*   L.const_struct context [| i' ; L.build_global_stringptr s "str" builder |]  *)
+
       | SLitArray l  -> let len = L.const_int i32_t (List.length l) in
                         let el = List.map (fun e' -> expr builder e') (List.rev l) in
                         build_array len el
@@ -175,7 +188,8 @@ let translate (globals, functions) =
         let v' = L.build_load (lookup s) s builder in 
         let extract_value = L.build_extractvalue v' 1 "extract_value" builder in
         let extract_array = L.build_gep extract_value [| i' |] "extract_array" builder in  
-        L.build_load extract_array s builder 
+        let result = L.build_load extract_array s builder in
+        result
         
       | SArrayAssign(v, i, e) -> let e' = expr builder e in 
         let i' = expr builder (i) in
