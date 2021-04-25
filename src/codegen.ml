@@ -63,6 +63,38 @@ let translate (globals, functions) =
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
+  
+  let printbig_t : L.lltype =
+      L.function_type i32_t [| i32_t |] in
+  let printbig_func : L.llvalue =
+      L.declare_function "printbig" printbig_t the_module in
+
+  (* TODO: add render function, printarray, printnote *)
+  let printn_t : L.lltype =
+    L.function_type i32_t [| ltype_of_typ(A.Note) |] in
+  let printn_func : L.llvalue =
+    L.declare_function "printn" printn_t the_module in
+
+  let printa_t : L.lltype =
+    L.function_type i32_t [| ltype_of_typ(A.Array(Int)) |] in
+  let printa_func : L.llvalue =
+    L.declare_function "printa" printa_t the_module in
+
+  let render_t : L.lltype =
+    L.function_type i32_t [| ltype_of_typ(A.Array(Note)) ; string_t ; i32_t ; i32_t |] in
+  let render_func : L.llvalue =
+    L.declare_function "render" render_t the_module in
+
+  let printmidi_t : L.lltype =
+    L.function_type i32_t [| string_t |] in
+  let printmidi_func : L.llvalue =
+    L.declare_function "printmidi" printmidi_t the_module in
+  
+(*     
+  let stringsubstring_t : L.lltype =
+      L.function_type string_t [| string_t ; i32_t ; i32_t |] in
+  let stringsubstring_func : L.llvalue =
+      L.declare_function "substring" stringsubstring_t the_module in *)
 
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
@@ -188,12 +220,26 @@ let translate (globals, functions) =
         (match op with
         | A.Not                  -> L.build_not) e' "tmp" builder
       | SCall ("print", [e])
+      | SCall ("printbig", [e]) ->
+        L.build_call printbig_func [| (expr builder e) |] "printbig" builder
       | SCall ("printi", [e]) ->
         L.build_call printf_func [| int_format_str ; (expr builder e) |]
           "printf" builder
       | SCall ("prints", [e]) -> 
 	      L.build_call printf_func [| string_format_str ; (expr builder e) |]
 	        "printf" builder
+      | SCall ("printn", [e]) -> 
+        L.build_call printn_func [| (expr builder e) |]
+          "printn" builder
+      | SCall ("printa", [e]) -> 
+        L.build_call printa_func [| (expr builder e) |]
+          "printa" builder
+      | SCall ("render", [arr ; file ; key ; tempo]) -> 
+        L.build_call render_func [| (expr builder arr) ; (expr builder file) ; (expr builder key) ; (expr builder tempo) |]
+          "render" builder
+      | SCall ("printmidi", [e]) -> 
+        L.build_call printmidi_func [| (expr builder e) |]
+          "printmidi" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (expr builder) (List.rev args)) in

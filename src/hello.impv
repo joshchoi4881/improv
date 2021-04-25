@@ -2,6 +2,16 @@ int glo;
 
 func int main() {
     int a;
+    note n;
+
+    a = 3;
+    printbig(3);
+
+    n = <1, "wh">;
+    printn(n);
+
+  /*
+    int a;
     string b;
     int c;
     note n;
@@ -47,7 +57,7 @@ func int main() {
 
     x = 4115 % 42;
 
-    printi(x); 
+    printi(x);  */
 
     return 0;
 }

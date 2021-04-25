@@ -1,5 +1,6 @@
 func int main() {
   note n;
+  n = <0, "wh">;
   n = <1, "wh">;
   n = <2, "hf">;
   n = <3, "qr">;

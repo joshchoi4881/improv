@@ -1,8 +1,8 @@
 # "make test" Compiles everything and runs the regression tests
 
-# .PHONY : test
-# test : all testall.sh
-# 	./testall.sh
+.PHONY : test
+test : all testall.sh
+	./testall.sh
 
 # "make microc.native" compiles the compiler
 #
@@ -26,13 +26,22 @@ clean :
 	rm -f improv.native
 	rm -f hello.lli
 	rm -rf _build
+	rm -f *.o
 
 .PHONY : all
-all : clean improv.native 
+all : clean improv.native midifile.o
 
 # Testing the "printbig" example
 # printbig : printbig.c
-	# cc -o printbig -DBUILD_TEST printbig.c
+# 	cc -o printbig -DBUILD_TEST printbig.c
+
+# midifile.o:	midifile.c	midifile.h
+# midiutil.o:	midiutil.c	midiutil.h
+
+# improv : improv.c midifile.o 
+# 	gcc -Wall -DBUILD_TEST midifile.o improv.c -o improv
+# cc -o improv -DBUILD_TEST improv.c
+
 
 # Building the tarball
 

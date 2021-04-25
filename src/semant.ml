@@ -37,7 +37,17 @@ let check (globals, functions) =
       params = [(ty, "x")];
       vars = []; 
       body = [] } map
-    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String) ] (*Simplicity for hello world*)
+    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note); ("printbig", Int); ("printmidi", String); ("printa", Array(Int))]; 
+  in
+
+  (* TODO: add render function, printarray *)
+  let built_in_decls =
+    StringMap.add "render" {
+      ftype = None;
+      fname = "render";
+      params = [(Array(Note), "noteArr"); (String, "filename"); (Int, "key"); (Int, "tempo")]; (* formals *)
+      vars = []; (* locals *)
+      body = [] } built_in_decls 
   in
 
   (* Add function name to symbol table *)
@@ -88,15 +98,36 @@ let check (globals, functions) =
 
     (* Raise exception if given tone is not valid (only 1-6) *)
     let check_tone t = 
-      if t >= 1 && t <= 6 then t
-      else raise (Failure ("invalid tone assignment, must be within 1-6"))
+      if t >= 0 && t <= 5 then t
+      else raise (Failure ("invalid tone assignment, must be within 0-5"))
     in 
 
     (* Raise exception if given rhythm is not valid *)
+
+      (* TODO: map strings to integers, if not in map then invalid 
     let check_rhythm r = 
       if String.equal r "wh" || String.equal r "hf" || String.equal r "qr" || String.equal r "ei" || String.equal r "sx" then r
       else raise (Failure ("invalid rhythm assignment " ^ r))
-    in
+    in *)
+    (*
+    let check_rhythm r =  
+        if r String.equal "wh" then 0
+        if r String.equal "hf" then 1
+        if r String.equal "qr" then 2
+        if r String.equal "ei" then 4   
+        if r String.equal "sx" then 5   
+        else raise (Failure ("invalid rhythm assignment " ^ r))
+    in *)
+
+    let check_rhythm r = 
+      match r with
+        | "wh" -> "0" 
+        | "hf" -> "1"
+        | "qr" -> "2" 
+        | "ei" -> "3" 
+        | "sx" -> "4"
+        | _ -> raise (Failure ("invalid rhythm assignment " ^ r))
+      in 
 
     (* let check_type lvaluet rvaluet err =
       if (String.compare (string_of_typ lvaluet) (string_of_typ rvaluet)) == 0 then lvaluet else raise err

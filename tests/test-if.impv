@@ -1,7 +1,7 @@
 func int main() {
   bool e;
   e = true;
-  if e {
+  if (e) {
     prints("true");
   } else {
     prints("false");

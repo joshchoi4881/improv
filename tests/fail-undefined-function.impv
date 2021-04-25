@@ -1,0 +1,3 @@
+func int main() {
+  printi(add(4115, 42));
+}
