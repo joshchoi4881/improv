@@ -136,17 +136,15 @@ let check (globals, functions) =
             | _ :: t -> type_check t
             | [] -> raise (Failure ("empty array")) 
             in type_check array
-      | ArrayAccess (a, i) -> (Int, SLitInt 10)
-        (* let t = type_of_identifier a in
-        if match_array t then () else raise (Failure (a ^ " is not an array"))
-        get_array_type t *)
-
-        (* let s' = (lookup s) in
-        let e' = expr e in
-        let _ = (match (expr e) with
-                                  (Int, e) -> (Int, e)
-                                  | _ -> raise (Failure ("attempting to access with a non integer type"))) in
-                        array_access_type (type_of_identifier s) *)
+      | ArrayAccess (a, i) -> 
+        let (t, i') = expr i in
+        let ty = (type_of_identifier a) in
+        (* let ty' = match t with
+            Array(ty) -> ty
+          | _ -> raise (Failure ("invalid array type")) in *)
+        (get_array_type ty, SArrayAccess (a, (t, i')))
+        
+        (* (Int, SLitInt 10) *)
 
       (* ArrayAccess 
       Return string & semantically checked sexpr
@@ -155,23 +153,19 @@ let check (globals, functions) =
       Check s is an array
       e is an integer
 
-      Type of array access = type of elements of array
-      *)
+      Type of array access = type of elements of array *)
                     
-      | ArrayAssign(v, i, e) -> (Int, SLitInt 11)
-      (* | ArrayAssign(v, i, e) as ex -> let type_of_left_side = 
-        if string_of_typ(expr (List.hd i)) != string_of_typ(Int)
-        then raise ( Failure("Array index ('" ^ string_of_expr (List.hd i) ^ "') is not an integer") )
-        else 
-          let type_of_entity = type_of_identifier v in
-          (match type_of_entity with
-              Array(d, _) -> d
-            | _ -> raise (Failure ("Entity being indexed ('" ^ v ^"') cannot be array"))) in
-        let type_of_right_side = expr e in
-        check_type type_of_left_side type_of_right_side 
-        (Failure ("illegal assignment " ^ string_of_typ type_of_left_side ^
-                  " = " ^ string_of_typ type_of_right_side ^ " in " ^ 
-                  string_of_expr ex)) *)
+      | ArrayAssign(v, i, e) -> 
+        let (t, i') = expr i in
+        let (te, e') = expr e in
+        let ty = (type_of_identifier v) in
+        (* let ty' = match t with
+            Array(ty) -> ty
+          | _ -> raise (Failure ("invalid array type")) in *)
+        (get_array_type ty, SArrayAssign (v, (t, i'), (te, e')))
+        
+        (* (Int, SLitInt 11) *)
+
       | NoExpr     -> (None, SNoExpr)
       | Id s       -> (type_of_identifier s, SId s)
       | Assign(var, e) as ex -> 

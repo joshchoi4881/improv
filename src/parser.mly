@@ -7,7 +7,7 @@
 %token COMMA  
 
 %token PLUS MINUS TIMES DIVIDE MOD
-%token CONCAT BIND DUP
+// %token CONCAT BIND DUP
 %token EQ NEQ LT LTE GT GTE 
 %token AND OR NOT 
 
@@ -33,9 +33,9 @@
 %left AND 
 %left EQ NEQ
 %nonassoc LT LTE GT GTE
-%left CONCAT
-%nonassoc BIND 
-%nonassoc DUP
+// %left CONCAT
+// %nonassoc BIND 
+// %nonassoc DUP
 %left COMMA 
 %left PLUS MINUS
 %left TIMES DIVIDE MOD

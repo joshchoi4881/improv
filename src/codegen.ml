@@ -113,8 +113,8 @@ let translate (globals, functions) =
 
     let build_array_access s i1 i2 builder isAssign = 
       if isAssign
-         then L.build_gep(lookup s) [| i1; i2 |] s builder
-      else L.build_load (L.build_gep(lookup s) [| i1; i2|] s builder) s builder
+         then L.build_gep (lookup s) [| i1; i2 |] s builder
+      else L.build_load (L.build_gep (lookup s) [| i1; i2 |] s builder) s builder
     in 
 
     (* Construct code for an expression; return its value *)
@@ -142,47 +142,22 @@ let translate (globals, functions) =
                         ignore (L.build_store arr_mem second_store builder);
                         let result = L.build_load struc_ptr "actual_arr_literal" builder in
                         result
-        
-        (* let arr_ptr = expr builder (A.MakeArray(U.get_array_type arr_type,
-                                  A.IntLit(List.length expr_list))) in
-        List.iteri (fun idx e -> 
-          let arr_gep = L.build_in_bounds_gep arr_ptr [| L.const_int i32_t (idx) |] "array_lit" builder in
-          let assign_val = expr builder e in
-          ignore (L.build_store assign_val arr_gep builder)
-        ) expr_list;
-        arr_ptr *)
-        
+
       | SArrayAccess(s, ind1) ->
         let i = expr builder ind1 in 
-          build_array_access s(L.const_int i32_t 0) i builder false
-
-      (* | SArrayAccess(arr_name, idx_expr) -> 
-        let idx = expr builder idx_expr in
-        let llname = arr_name ^ "[" ^ L.string_of_llvalue idx ^ "]" in
-        let arr_ptr_load =
-          let arr_ptr = lookup arr_name in
-          L.build_load arr_ptr arr_name builder in
-        let arr_gep = L.build_in_bounds_gep arr_ptr_load [|idx|] llname builder in
-        L.build_load arr_gep (llname ^ "_load") builder *)
-
+          build_array_access s (L.const_int i32_t 0) i builder false
         (* for the name, get the fat pointer, then get the pointer to array
         evaluate index expression
         use get element pointer with index to calculate address into array
         fetch element *)
-
+        
       | SArrayAssign(v, i, e) -> let e' = expr builder e in 
         let i' = expr builder (i) in
         let v' = L.build_load (lookup v) v builder in 
-        let extract_array = L.build_extractvalue v' 1 "extract_ptr" builder in
-        let extract_value = L.build_gep extract_array [| i' |] "extract_value" builder in
-        ignore (L.build_store e' extract_value builder); e'
+        let extract_value = L.build_extractvalue v' 1 "extract_value" builder in
+        let extract_array = L.build_gep extract_value [| i' |] "extract_array" builder in
+        ignore (L.build_store e' extract_array builder); e'
 
-      (* | SArrayAssign(v, i, e) -> let e' = expr builder e in 
-                              let i' = expr builder i in
-                              let v' = L.build_load (lookup v) v builder in 
-                              let extract_array = L.build_extractvalue v' 1 "extract_ptr" builder in
-                              let extract_value = L.build_gep extract_array [| i' |] "extract_value" builder in
-                              ignore (L.build_store e' extract_value builder); e' *)
       | SNoExpr     -> L.const_int i32_t 0
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in
