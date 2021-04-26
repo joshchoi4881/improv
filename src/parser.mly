@@ -144,11 +144,7 @@ expr:
   /* array access, assign, append */
   | ID LBRACK expr RBRACK { ArrayAccess($1, $3) }
   | ID LBRACK expr RBRACK ASSIGN expr { ArrayAssign($1, $3, $6) }
-<<<<<<< HEAD
-  | lit_array CONCAT lit_array { ArrayAppend($1, $3) }
-=======
   | expr CONCAT expr { ArrayAppend($1, $3) }
->>>>>>> f4d8495479721ba60b01c11527b4987a9df8198d
 
 args_opt:
   | /* nothing */ { [] }

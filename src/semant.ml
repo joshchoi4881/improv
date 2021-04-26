@@ -37,7 +37,7 @@ let check (globals, functions) =
       params = [(ty, "x")];
       vars = []; 
       body = [] } map
-    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note); ("printbig", Int); ("printmidi", String); ("printa", Array(Int))]; 
+    in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note); ("printbig", Int); ("printmidi", String); ("printa", Array(Int)); ("printNoteArr", Array(Note))]; 
   in
 
   (* TODO: add render function, printarray *)
@@ -46,6 +46,15 @@ let check (globals, functions) =
       ftype = None;
       fname = "render";
       params = [(Array(Note), "noteArr"); (String, "filename"); (Int, "key"); (Int, "tempo")]; (* formals *)
+      vars = []; (* locals *)
+      body = [] } built_in_decls 
+  in
+
+  let built_in_decls =
+    StringMap.add "append" {
+      ftype = Array(Note);
+      fname = "append";
+      params = [(Array(Note), "a1"); (Array(Note), "a2")]; (* formals *)
       vars = []; (* locals *)
       body = [] } built_in_decls 
   in

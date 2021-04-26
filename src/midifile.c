@@ -1380,3 +1380,74 @@ void render(Note_Arr noteArr, char* filename, int key, int tempo){
 void printmidi(char* filename){
   TestEventList(filename);
 }
+
+void printnInternal(Note note){
+  char *rhythm_map[6] ={"wh", "hf", "qr", "ei", "sx"};
+  printf("<%d, %s>", note.tone, rhythm_map[atoi(note.rhythm)]);
+}
+
+void printNoteArr(Note_Arr a){
+  int i;
+  printf("[");
+  for(i = 0; i < a.len; i++, a.arr++){
+    if(i == a.len-1){
+      printnInternal(*a.arr); 
+    } else{
+      printnInternal(*a.arr); 
+      printf(", ");
+    }
+  }
+  printf("]\n");
+}
+
+Note_Arr append(Note_Arr a1, Note_Arr a2){
+  int i;
+  Note_Arr result;
+  result.len = a1.len + a2.len;
+  result.arr = malloc(result.len * sizeof(Note));
+  void *ptr = result.arr;
+
+  int sizeofa1 = (a1.len)*sizeof(Note);
+  int sizeofa2 = (a2.len)*sizeof(Note);
+
+  memcpy(ptr, a1.arr, sizeofa1);
+  memcpy(ptr+sizeofa1, a2.arr, sizeofa2);
+
+  return result;
+}
+
+/*
+
+int *append(Arr a1, Arr a2){
+  int i;
+  Arr result;
+  result.len = a1.len + a2.len;
+  result.arr = malloc(result.len * sizeof(&a1.arr));
+  void *ptr = result.arr;
+
+  int sizeofa1 = (a1.len)*sizeof(&a1.arr);
+  int sizeofa2 = (a2.len)*sizeof(&a2.arr);
+  int s = result.len * sizeof(&a1.arr);
+  printf("%d, %d, %d\n", sizeofa1, sizeofa2, s);
+
+  // printa(a1.len, a1.arr);
+  // printa(a2.len, a2.arr);
+
+  memcpy(ptr, a1.arr, sizeofa1);
+  memcpy(ptr+sizeofa1, a2.arr, sizeofa2);
+
+
+  // for(i = 0; i < a1.len; i++, ptr++, a1.arr++){
+  //   result.arr[i] = a1.arr;
+  // }
+  // for(i = 0; i < a2.len; i++, ptr++, a2.arr++){
+  //   result.arr = a2.arr;
+  // } 
+
+  printi(result.len);
+
+  printa(result.len, result.arr);
+
+  return result.arr;
+}
+*/

@@ -8,9 +8,14 @@ typedef struct Note{
 } Note;
 
 typedef struct Note_Arr {
-    int len;
-    Note *arr;
+  int len;
+  Note *arr;
 } Note_Arr;
+
+typedef struct Arr {
+  int len;
+  void *arr;
+} Arr;
 
 #define CMAJ 1
 #define CSHARPMAJ 2

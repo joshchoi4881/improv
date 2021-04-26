@@ -1,45 +1,29 @@
-func int[] bubbleSort(int[] a, int n){
+/*
+func note[] convertIntToNote(int[] a, int n){
   int i;
-  int j;
-  int tmp;
+  note[] notes;
+  note tmp;
+  int val;
 
-  for (i = 0; i < n-1; i = i+1){
-    for (j = 0; j < n-i-1; j = j+1){
-      if (a[j] > a[j+1]){
-        tmp = a[j];
-        a[j] = a[j+1];
-        a[j+1] = tmp;
-        printa(a);
-      }
-    } 
-  } 
-  printa(a);
-  return a;
-}
+  notes = [<1, "wh">];
+  while(i < n-1){
+    tmp = <a[i]%5, "hf">;
+    notes = append(notes, [tmp]);
+    i = i+1;
+  }
 
-func int[] selectionSort(int[] a, int n){
-  int i;
-  int j;
-  int tmp;
-  int min_idx;
+/*
+  for(i = 0; i < 2; i = i+1){
+    tmp = <a[i]%5, "hf">;
+    /*
+    notes = append(notes, [tmp]); 
+    return notes;*/
+  }*/
 
-  for (i = 0; i < n-1; i = i+1){
-    min_idx = i;
+  printNoteArr(notes);
 
-    for (j = i+1; j < n; j = j+1){
-      if (a[j] < a[min_idx]){
-        min_idx = j;
-      } 
-    }  
-
-    tmp = a[min_idx];
-    a[min_idx] = a[i];
-    a[i] = tmp;   
-    printa(a);
-  }   
-  printa(a);
-  return a;
-}
+  return notes;
+} */
 
 
 func note[] convertIntToNote(int[] a, int n){
@@ -51,10 +35,11 @@ func note[] convertIntToNote(int[] a, int n){
   notes = [<1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">];
   
   for(i = 0; i < n-1; i = i+1){
-
     tmp = <a[i]%5, "hf">;
     notes[i] = tmp;
   }
+
+  printNoteArr(notes);
 
   return notes;
 }
@@ -66,12 +51,15 @@ func int main() {
   note[] notes;
 
   a = [23, 11, 39, 44, 2, 16, 52];
+  convertIntToNote(a, 7);
+  
+  /*
   
   render(convertIntToNote(a, 7), "before.mid", 1, 160);
 
   bubbleSort(a, 7);
 
-  render(convertIntToNote(a, 7), "after.mid", 1, 160);
+  render(convertIntToNote(a, 7), "after.mid", 1, 160);*/
 
   return 0;
 }

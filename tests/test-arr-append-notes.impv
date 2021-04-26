@@ -1,0 +1,16 @@
+func int main() {
+  note[] n1;
+  note[] n2;
+  note[] n3;
+
+  n1 = [<1, "wh">, <5, "wh">];
+  n2 = [<4, "wh">];
+
+  n1 = append(n1, n2);
+  printNoteArr(n1);
+
+  n1 = append(n1, [<2, "hf">]);
+  printNoteArr(n1);
+
+  return 0;
+}

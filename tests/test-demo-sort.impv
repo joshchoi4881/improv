@@ -1,0 +1,96 @@
+/* Generating sound of different sorting algorithms */
+
+func note[] bubbleSort(int[] a, int n, note[] notes){
+  int i;
+  int j;
+  int tmp;
+  note[] tmparr;
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
+
+  for (i = 0; i < n-1; i = i+1){
+    for (j = 0; j < n-i-1; j = j+1){
+      if (a[j] > a[j+1]){
+        tmp = a[j];
+        a[j] = a[j+1];
+        a[j+1] = tmp;
+        tmparr = convert(a, n);
+        notes = append(notes, tmparr);
+      }
+    } 
+  } 
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
+  printNoteArr(notes);
+  printa(a);
+  return notes;
+}
+
+func note[] selectionSort(int[] a, int n, note[] notes){
+  int i;
+  int j;
+  int tmp;
+  int min_idx;
+  note[] tmparr;
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
+
+  printa(a);
+
+  for (i = 0; i < n-1; i = i+1){
+    min_idx = i;
+
+    for (j = i+1; j < n; j = j+1){
+      if (a[j] < a[min_idx]){
+        min_idx = j;
+      } 
+    }  
+
+    tmp = a[min_idx];
+    a[min_idx] = a[i];
+    a[i] = tmp;   
+    tmparr = convert(a, n);
+    notes = append(notes, tmparr);
+    printa(a);
+  }   
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
+  printNoteArr(notes);
+  printa(a);
+  return notes;
+}
+
+func note[] convert(int[] a, int n){
+  int i;
+  note[] notes;
+  note tmp;
+  int val;
+
+  notes = [<1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">];
+  
+  for(i = 0; i < n; i = i+1){
+    tmp = <a[i]%5, "qr">;
+    notes[i] = tmp;
+  }
+
+  return notes;
+}
+
+
+func int main() {
+  int[] a;
+  note[] bubble;
+  note[] selection;
+
+  prints("BUBBLE SORT");
+  a = [54, 26, 11, 10, 32, 43];
+  bubble = [<0, "qr">];
+  render(bubbleSort(a, 6, bubble), "demo/bubble.mid", 13, 120);
+
+  prints("SELECTION SORT");
+  a = [54, 26, 11, 10, 32, 43];
+  selection = [<0, "qr">];
+  render(selectionSort(a, 6, selection), "demo/selection.mid", 13, 120);
+
+  return 0;
+}

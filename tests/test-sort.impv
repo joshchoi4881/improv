@@ -1,6 +1,54 @@
-func int[] quicksort(int arr[], int low, int high) {
+/*
+func int[] mergeSort(int[] a, int l, int m, int r){
+  int n1;
+  int n2;
+  n1 = m - l + 1;
+  n2 = r - m; 
+  int[] tmp1;
+  int[] tmp2;
+  
+  
+  for (i = 0; i < n1; i = i+1){
+    tmp1[i] = a[l+ i];
+  }
+  for (j = 0; j < n2; j = j+1){
+    tmp2[j] = a[m + 1 + j];
+  }
+  int i = 0; 
+  int j = 0;
+  int k = l;
+
+  while (i < n1 and j < n2){
+    if (tmp1[i] <= tmp2[j]){
+      a[k] = tmp1[i];
+      i = i + 1;
+    }
+    else {
+      a[k] = tmp2[j];
+      j = j + 1;
+    }
+    k = k + 1;
+  }
+  while (i < n1) {
+    a[k] = tmp1[j];
+    i = i + 1;
+    k = k + 1;
+  }
+  while (j < n2) {
+    a[k] = tmp2[j];
+    j = j + 1;
+    k = k + 1;
+  }
+  printa(a);
+  return a;
+}*/
+
+/*
+
+func int[] quicksort(int[] arr, int low, int high) {
+  int pi;
   if(low < high) {
-    int pi = partition(arr, low, high);
+    pi = partition(arr, low, high);
     arr = quickSort(arr, low, pi - 1);
     arr = quickSort(arr, pi + 1, high);
   }
@@ -9,26 +57,34 @@ func int[] quicksort(int arr[], int low, int high) {
 }
 
 func int partition(int[] arr, int high, int low) {
-  int pivot = arr[high];
-  int i = (low - 1);
-  for(int j = low; j <= high - 1; j++) {
+  int pivot; 
+  int i;
+  int j;
+  int tmp;
+
+  pivot = arr[high];
+  i = low - 1;
+  for(j = low; j <= high - 1; j = j+1) {
     if(arr[j] < pivot) {
       i = i + 1;
-      int temp = arr[i];
+      tmp = arr[i];
       arr[i] = arr[j];
-      arr[j] = temp; 
+      arr[j] = tmp; 
+      printa(arr);
     }
   }
-  int temp = arr[i + 1];
+  tmp = arr[i + 1];
   arr[i + 1] = arr[high];
-  arr[high] = temp;
-  return(i + 1);
-}
+  arr[high] = tmp;
+  printa(arr);
+  return i+1;
+}*/
 
 func int[] bubbleSort(int[] a, int n){
   int i;
   int j;
   int tmp;
+  printa(a);
 
   for (i = 0; i < n-1; i = i+1){
     for (j = 0; j < n-i-1; j = j+1){
@@ -49,6 +105,7 @@ func int[] selectionSort(int[] a, int n){
   int j;
   int tmp;
   int min_idx;
+  printa(a);
 
   for (i = 0; i < n-1; i = i+1){
     min_idx = i;
@@ -71,14 +128,25 @@ func int[] selectionSort(int[] a, int n){
 func int main() {
   int[] a;
 
+  prints("BUBBLE SORT");
   a = [23, 11, 39, 44, 2, 16, 52];
   bubbleSort(a, 7);
 
+  prints("SELECTION SORT");
   a = [23, 11, 39, 44, 2, 16, 52];
   selectionSort(a, 7);
 
+/*
+  prints("MERGE SORT");
   a = [23, 11, 39, 44, 2, 16, 52];
-  quickSort(a, 7);
+  mergeSort(a, 0, 3, 6);*/
+
+  /*
+
+  prints("QUICK SORT");
+  a = [23, 11, 39, 44, 2, 16, 52];
+  quickSort(a, 2, 52);*/
 
   return 0;
 }
+

@@ -95,6 +95,16 @@ let translate (globals, functions) =
   let printmidi_func : L.llvalue =
     L.declare_function "printmidi" printmidi_t the_module in
 
+  let append_t : L.lltype =
+    L.function_type (ltype_of_typ(A.Array(Note))) [| ltype_of_typ(A.Array(Note)) ; ltype_of_typ(A.Array(Note)) |] in
+  let append_func : L.llvalue =
+    L.declare_function "append" append_t the_module in
+  
+  let printNoteArr_t : L.lltype =
+    L.function_type i32_t [| ltype_of_typ(A.Array(Note)) |] in
+  let printNoteArr_func : L.llvalue =
+    L.declare_function "printNoteArr" printNoteArr_t the_module in
+
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
   let function_decls : (L.llvalue * sfunc_decl) StringMap.t =
@@ -302,6 +312,12 @@ let translate (globals, functions) =
       | SCall ("printmidi", [e]) -> 
         L.build_call printmidi_func [| (expr builder e) |]
           "printmidi" builder
+      | SCall ("append", [a1; a2]) -> 
+        L.build_call append_func [| (expr builder a1) ; (expr builder a2) |]
+          "append" builder
+      | SCall ("printNoteArr", [a1]) -> 
+        L.build_call printNoteArr_func [| (expr builder a1) |]
+          "printNoteArr" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (expr builder) (List.rev args)) in

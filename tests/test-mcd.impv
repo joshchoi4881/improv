@@ -1,0 +1,8 @@
+func int main() {
+  note[] arr;
+  arr = [<1, "qr">, <1, "qr">, <1, "qr">, <4, "qr">,
+    <0, "qr">, <0, "qr">, <4, "hf">, <3, "qr">,
+    <3, "qr">, <2, "qr">, <2, "qr">, <1, "hf">];
+  render(arr, "demo/mcd.mid", 13, 120);
+  return 0;
+}
