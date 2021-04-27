@@ -1415,39 +1415,3 @@ Note_Arr append(Note_Arr a1, Note_Arr a2){
 
   return result;
 }
-
-/*
-
-int *append(Arr a1, Arr a2){
-  int i;
-  Arr result;
-  result.len = a1.len + a2.len;
-  result.arr = malloc(result.len * sizeof(&a1.arr));
-  void *ptr = result.arr;
-
-  int sizeofa1 = (a1.len)*sizeof(&a1.arr);
-  int sizeofa2 = (a2.len)*sizeof(&a2.arr);
-  int s = result.len * sizeof(&a1.arr);
-  printf("%d, %d, %d\n", sizeofa1, sizeofa2, s);
-
-  // printa(a1.len, a1.arr);
-  // printa(a2.len, a2.arr);
-
-  memcpy(ptr, a1.arr, sizeofa1);
-  memcpy(ptr+sizeofa1, a2.arr, sizeofa2);
-
-
-  // for(i = 0; i < a1.len; i++, ptr++, a1.arr++){
-  //   result.arr[i] = a1.arr;
-  // }
-  // for(i = 0; i < a2.len; i++, ptr++, a2.arr++){
-  //   result.arr = a2.arr;
-  // } 
-
-  printi(result.len);
-
-  printa(result.len, result.arr);
-
-  return result.arr;
-}
-*/

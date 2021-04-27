@@ -1,8 +1,7 @@
-(* Abstract Syntax Tree and functions for printing it *)
+(* Authors: Alice Zhang, Josh Choi *)
 
 type op = Add | Sub | Mul | Div | Mod |
           Eq | Neq | Lt | Lte | And | Or
-          (* | Concat | Bind | Dup *)
 
 type uop = Not
 
@@ -15,9 +14,7 @@ type expr =
     LitBool of bool 
   | LitInt of int 
   | LitString of string
-  | LitTone of int
-  | LitRhythm of string 
-  | LitNote of expr * string (* LitTone, LitRhythm *)
+  | LitNote of expr * string
   | LitArray of expr list 
   | Id of string
   | Binop of expr * op * expr
@@ -26,7 +23,6 @@ type expr =
   | Call of string * expr list
   | ArrayAccess of string * expr
   | ArrayAssign of string * expr * expr
-  | ArrayAppend of expr * expr
   | NoExpr
 
 type stmt =
@@ -61,21 +57,15 @@ let string_of_op = function
   | Lte -> "<="
   | And -> "&&"
   | Or -> "||"
-  (* | Concat -> "$"
-  | Bind -> "@"
-  | Dup -> "^" *)
 
 let string_of_uop = function
     Not -> "!"
 
 let rec string_of_expr = function
-  (* Insert literal and boolean logic *)
     LitBool(true) -> "true"
   | LitBool(false) -> "false"
   | LitInt(i) -> string_of_int i
   | LitString(s) -> s
-  | LitTone(t) -> string_of_int t
-  | LitRhythm(r) -> r
   | LitNote(t, r) -> "<" ^ string_of_expr t ^ ", " ^ r ^ ">"
   | LitArray(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
   | Id(s) -> s
@@ -87,7 +77,6 @@ let rec string_of_expr = function
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
   | ArrayAssign(v, l, e) -> v ^ "[" ^ string_of_expr l ^ "]" ^ " = " ^ string_of_expr e
-  | ArrayAppend(a1, a2) -> string_of_expr a1 ^ " $ " ^ string_of_expr a2
   | NoExpr -> ""
 
 let rec string_of_stmt = function

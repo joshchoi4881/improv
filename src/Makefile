@@ -31,10 +31,6 @@ clean :
 .PHONY : all
 all : clean improv.native midifile.o
 
-# Testing the "printbig" example
-# printbig : printbig.c
-# 	cc -o printbig -DBUILD_TEST printbig.c
-
 # midifile.o:	midifile.c	midifile.h
 # midiutil.o:	midiutil.c	midiutil.h
 

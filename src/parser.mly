@@ -1,3 +1,5 @@
+/* Authors: Emily Li, Natalia Dorogi, Alice Zhang */
+
 %{ open Ast %}
 
 %token SEP EOF ENDLINE
@@ -7,12 +9,10 @@
 %token COMMA  
 
 %token PLUS MINUS TIMES DIVIDE MOD
-%token CONCAT 
-// BIND DUP
 %token EQ NEQ LT LTE GT GTE 
 %token AND OR NOT 
 
-%token NOTE TONE RHYTHM
+%token NOTE
 %token INT BOOL STRING NONE 
 
 %token FUNC IN IF ELSE FOR WHILE RETURN
@@ -20,9 +20,6 @@
 %token <bool> LIT_BOOL
 %token <int> LIT_INT
 %token <string> LIT_STRING
-/*
-%token <string> LIT_KEY 
-%token <string> LIT_STYLE  */
 %token <string> ID
 
 %nonassoc NOELSE
@@ -34,9 +31,6 @@
 %left AND 
 %left EQ NEQ
 %nonassoc LT LTE GT GTE
-%left CONCAT
-// %nonassoc BIND 
-// %nonassoc DUP
 %left COMMA 
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
@@ -77,8 +71,6 @@ typ:
   | INT     { Int }
   | STRING  { String }
   | NOTE    { Note }
-  | TONE    { Tone }
-  | RHYTHM  { Rhythm }
   | NONE    { None }
   | typ LBRACK RBRACK { Array($1) }
 
@@ -130,11 +122,6 @@ expr:
   | expr AND expr { Binop($1, And, $3) }
   | expr OR  expr { Binop($1, Or,  $3) }
 
-  /* music list operations */
-  // | lit_array CONCAT lit_array { Binop($1, Concat, $3) }
-  // | lit_array BIND lit_array { Binop($1, Bind, $3) } /* notes, tones, rhythms */
-  // | expr DUP expr { Binop($1, Dup, $3) } /* LIT_INT */
-
   /* variable assignment */ 
   | ID ASSIGN expr { Assign($1, $3) }
 
@@ -144,7 +131,6 @@ expr:
   /* array access, assign, append */
   | ID LBRACK expr RBRACK { ArrayAccess($1, $3) }
   | ID LBRACK expr RBRACK ASSIGN expr { ArrayAssign($1, $3, $6) }
-  | expr CONCAT expr { ArrayAppend($1, $3) }
 
 args_opt:
   | /* nothing */ { [] }
@@ -160,12 +146,6 @@ literals:
   | LIT_STRING       { LitString($1) }
   | lit_note         { $1 }
   | lit_array        { $1 }
-/*
-lit_tone:
-  | LIT_INT { LitTone($1) }
-
-lit_rhythm:
-  | LIT_STRING { LitRhythm($1) } */
 
 lit_note:
   | LT expr COMMA LIT_STRING GT  { LitNote($2, $4) }
@@ -177,4 +157,3 @@ items_list:
   |                  { [] }
   | expr             { [$1] }
   | items_list COMMA expr { $3 :: $1 }
-

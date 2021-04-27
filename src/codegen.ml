@@ -1,16 +1,4 @@
-(* Code generation: translate takes a semantically checked AST and
-produces LLVM IR
-
-LLVM tutorial: Make sure to read the OCaml version of the tutorial
-
-http://llvm.org/docs/tutorial/index.html
-
-Detailed documentation on the OCaml LLVM library:
-
-http://llvm.moe/
-http://llvm.moe/ocaml/
-
-*)
+(* Authors: Alice Zhang, Emily Li *)
 
 module L = Llvm
 module A = Ast
@@ -31,7 +19,6 @@ let translate (globals, functions) =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and string_t   = L.pointer_type (L.i8_type context)
-  and array_t    = L.struct_type context
   and void_t     = L.void_type   context in
 
   (* Return the LLVM type for an Improv type *)
@@ -50,11 +37,6 @@ let translate (globals, functions) =
       0 -> [ ]
     | 1 -> [ 0 ]
     | n -> int_range (n - 1) @ [ n - 1 ] in
-
-  let range_list j = 
-    let rec aux n acc =
-      if (n < (L.const_int i32_t 0)) then acc else aux (L.const_sub n (L.const_int i32_t 1)) (n :: acc)
-  in aux j [] in
 
   (* Create a map of global variables after creating each *)
   let global_vars : L.llvalue StringMap.t =
@@ -152,12 +134,6 @@ let translate (globals, functions) =
                    with Not_found -> StringMap.find n global_vars
     in
 
-    let build_array_access s i1 i2 builder isAssign = 
-      if isAssign
-         then L.build_gep (lookup s) [| i1; i2 |] s builder
-      else L.build_load (L.build_gep (lookup s) [| i1; i2 |] s builder) s builder
-    in 
-
     let build_array len el = 
       let arr_mem = L.build_array_malloc (L.type_of (List.hd el)) len "tmp" builder in
         List.iter (fun idx ->
@@ -180,8 +156,6 @@ let translate (globals, functions) =
 	      SLitInt i -> L.const_int i32_t i
       | SLitString s -> L.build_global_stringptr s "str" builder
       | SLitBool b  -> L.const_int i1_t (if b then 1 else 0)
-      | SLitTone i -> L.const_int i32_t i
-      | SLitRhythm s -> L.build_global_stringptr s "str" builder
 
       (* note struct type *)
       | SLitNote (i, s) -> 
@@ -212,57 +186,6 @@ let translate (globals, functions) =
         let extract_array = L.build_gep extract_value [| i' |] "extract_array" builder in
         ignore (L.build_store e' extract_array builder); e'
 
-      | SArrayAppend(a1, a2) -> 
-        let a1' = expr builder a1 in
-        let a1_loaded = match L.type_of a1' with 
-          | string_t -> 
-              let a1_name = L.string_of_llvalue a1' in
-              L.build_load (lookup a1_name) a1_name builder
-          | array_t -> a1' 
-        in
-        let a1_size = L.build_extractvalue a1_loaded 0 "extract_value" builder in
-        (* let a1_size_int = match L.type_of a1_size with 
-          i32_t -> ((int)(a1_size)) in *)
-        let a1_ptr = L.build_extractvalue a1_loaded 1 "extract_value" builder in
-        let a1_elems = [] in
-        List.iter (fun idx ->
-          let extract_array = L.build_gep a1_ptr [| idx |] "extract_array" builder in
-          let x = L.build_load extract_array "elem" builder in
-          ignore(a1_elems @ [x])
-        ) (range_list a1_size);
-        let a2' = expr builder a2 in
-        let a2_loaded = match L.type_of a2' with 
-          | string_t -> 
-              let a2_name = L.string_of_llvalue a2' in 
-              L.build_load (lookup a2_name) a2_name builder
-          | array_t -> a2'
-        in
-        let a2_size = L.build_extractvalue a2_loaded 0 "extract_value" builder in
-          let a2_ptr = L.build_extractvalue a2_loaded 1 "extract_value" builder in
-          let a2_elems = [] in
-          List.iter (fun idx ->
-            let extract_array = L.build_gep a2_ptr [| idx |] "extract_array" builder in
-            let x = L.build_load extract_array "elem" builder in
-            ignore(a2_elems @ [x])
-          ) (range_list (a2_size));
-        let total_size = L.const_add a1_size a2_size in
-        let all_elems = List.append a1_elems a2_elems in
-        let arr_mem = L.build_array_malloc (L.type_of (List.hd all_elems)) total_size "tmp" builder in
-        List.iter (fun idx ->
-          let arr_ptr = (L.build_gep arr_mem [| L.const_int i32_t idx |] "tmp2" builder) in
-          let e_val = List.nth all_elems idx in
-          ignore (L.build_store e_val arr_ptr builder)
-        ) (int_range (List.length(all_elems)));
-
-        let len_arr_ptr = L.struct_type context [| i32_t ; L.pointer_type (L.type_of (List.hd all_elems)) |] in
-        let struc_ptr = L.build_malloc len_arr_ptr "arr_literal" builder in
-        let first_store = L.build_struct_gep struc_ptr 0 "first" builder in
-        let second_store = L.build_struct_gep struc_ptr 1 "second" builder in
-        ignore (L.build_store total_size first_store builder);
-        ignore (L.build_store arr_mem second_store builder);
-        let result = L.build_load struc_ptr "actual_arr_literal" builder in
-        result
-
       | SNoExpr     -> L.const_int i32_t 0
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in
@@ -282,10 +205,6 @@ let translate (globals, functions) =
         | A.Neq     -> L.build_icmp L.Icmp.Ne
         | A.Lt      -> L.build_icmp L.Icmp.Slt
         | A.Lte     -> L.build_icmp L.Icmp.Sle
-        (* | A.Bind     -> 
-        | A.Dup     ->  *)
-        (* | A.Greater -> L.build_icmp L.Icmp.Sgt
-        | A.Geq     -> L.build_icmp L.Icmp.Sge *)
         ) e1' e2' "tmp" builder
       | SUniop(op, ((t, _) as e)) ->
         let e' = expr builder e in

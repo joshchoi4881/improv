@@ -1,0 +1,63 @@
+; ModuleID = 'Improv'
+source_filename = "Improv"
+
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%s\0A\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+declare i32 @printbig(i32)
+
+declare i32 @printn({ i32, i8* })
+
+declare i32 @printa({ i32, i32* })
+
+declare i32 @render({ i32, { i32, i8* }* }, i8*, i32, i32)
+
+declare i32 @printmidi(i8*)
+
+define i32 @main() {
+entry:
+  %x = alloca i32
+  %a = alloca { i32, i32* }
+  %i = alloca i32
+  %malloccall = tail call i8* @malloc(i32 mul (i32 ptrtoint (i32* getelementptr (i32, i32* null, i32 1) to i32), i32 4))
+  %tmp = bitcast i8* %malloccall to i32*
+  %tmp2 = getelementptr i32, i32* %tmp, i32 0
+  store i32 1, i32* %tmp2
+  %tmp21 = getelementptr i32, i32* %tmp, i32 1
+  store i32 2, i32* %tmp21
+  %tmp22 = getelementptr i32, i32* %tmp, i32 2
+  store i32 6, i32* %tmp22
+  %tmp23 = getelementptr i32, i32* %tmp, i32 3
+  store i32 8, i32* %tmp23
+  %malloccall4 = tail call i8* @malloc(i32 ptrtoint ({ i32, i32* }* getelementptr ({ i32, i32* }, { i32, i32* }* null, i32 1) to i32))
+  %arr_literal = bitcast i8* %malloccall4 to { i32, i32* }*
+  %first = getelementptr inbounds { i32, i32* }, { i32, i32* }* %arr_literal, i32 0, i32 0
+  %second = getelementptr inbounds { i32, i32* }, { i32, i32* }* %arr_literal, i32 0, i32 1
+  store i32 4, i32* %first
+  store i32* %tmp, i32** %second
+  %actual_arr_literal = load { i32, i32* }, { i32, i32* }* %arr_literal
+  store { i32, i32* } %actual_arr_literal, { i32, i32* }* %a
+  %a5 = load { i32, i32* }, { i32, i32* }* %a
+  %extract_value = extractvalue { i32, i32* } %a5, 1
+  %extract_array = getelementptr i32, i32* %extract_value, i32 2
+  %a6 = load i32, i32* %extract_array
+  store i32 %a6, i32* %x
+  %x7 = load i32, i32* %x
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %x7)
+  %a8 = load { i32, i32* }, { i32, i32* }* %a
+  %extract_value9 = extractvalue { i32, i32* } %a8, 1
+  %extract_array10 = getelementptr i32, i32* %extract_value9, i32 1
+  store i32 10, i32* %extract_array10
+  %a11 = load { i32, i32* }, { i32, i32* }* %a
+  %extract_value12 = extractvalue { i32, i32* } %a11, 1
+  %extract_array13 = getelementptr i32, i32* %extract_value12, i32 1
+  %a14 = load i32, i32* %extract_array13
+  %printf15 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %a14)
+  %a16 = load { i32, i32* }, { i32, i32* }* %a
+  %printa = call i32 @printa({ i32, i32* } %a16)
+  ret i32 0
+}
+
+declare noalias i8* @malloc(i32)

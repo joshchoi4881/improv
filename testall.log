@@ -1,9 +1,252 @@
 /usr/bin/lli
 
+###### Testing test-arith
+./src/improv.native tests/test-arith.impv > test-arith.ll
+llc -relocation-model=pic test-arith.ll > test-arith.s
+cc -o test-arith.exe test-arith.s src/midifile.o
+./test-arith.exe
+diff -b test-arith.out tests/test-arith.out > test-arith.diff
+###### SUCCESS
+
+###### Testing test-arr-access
+./src/improv.native tests/test-arr-access.impv > test-arr-access.ll
+llc -relocation-model=pic test-arr-access.ll > test-arr-access.s
+cc -o test-arr-access.exe test-arr-access.s src/midifile.o
+./test-arr-access.exe
+diff -b test-arr-access.out tests/test-arr-access.out > test-arr-access.diff
+###### SUCCESS
+
+###### Testing test-arr-append-notes
+./src/improv.native tests/test-arr-append-notes.impv > test-arr-append-notes.ll
+llc -relocation-model=pic test-arr-append-notes.ll > test-arr-append-notes.s
+cc -o test-arr-append-notes.exe test-arr-append-notes.s src/midifile.o
+./test-arr-append-notes.exe
+diff -b test-arr-append-notes.out tests/test-arr-append-notes.out > test-arr-append-notes.diff
+###### SUCCESS
+
+###### Testing test-arr-assign
+./src/improv.native tests/test-arr-assign.impv > test-arr-assign.ll
+llc -relocation-model=pic test-arr-assign.ll > test-arr-assign.s
+cc -o test-arr-assign.exe test-arr-assign.s src/midifile.o
+./test-arr-assign.exe
+diff -b test-arr-assign.out tests/test-arr-assign.out > test-arr-assign.diff
+###### SUCCESS
+
+###### Testing test-arr
+./src/improv.native tests/test-arr.impv > test-arr.ll
+llc -relocation-model=pic test-arr.ll > test-arr.s
+cc -o test-arr.exe test-arr.s src/midifile.o
+./test-arr.exe
+diff -b test-arr.out tests/test-arr.out > test-arr.diff
+###### SUCCESS
+
+###### Testing test-convert
+./src/improv.native tests/test-convert.impv > test-convert.ll
+llc -relocation-model=pic test-convert.ll > test-convert.s
+cc -o test-convert.exe test-convert.s src/midifile.o
+./test-convert.exe
+diff -b test-convert.out tests/test-convert.out > test-convert.diff
+###### SUCCESS
+
+###### Testing test-demo-sort
+./src/improv.native tests/test-demo-sort.impv > test-demo-sort.ll
+llc -relocation-model=pic test-demo-sort.ll > test-demo-sort.s
+cc -o test-demo-sort.exe test-demo-sort.s src/midifile.o
+./test-demo-sort.exe
+diff -b test-demo-sort.out tests/test-demo-sort.out > test-demo-sort.diff
+###### SUCCESS
+
+###### Testing test-fib
+./src/improv.native tests/test-fib.impv > test-fib.ll
+llc -relocation-model=pic test-fib.ll > test-fib.s
+cc -o test-fib.exe test-fib.s src/midifile.o
+./test-fib.exe
+diff -b test-fib.out tests/test-fib.out > test-fib.diff
+###### SUCCESS
+
+###### Testing test-for
+./src/improv.native tests/test-for.impv > test-for.ll
+llc -relocation-model=pic test-for.ll > test-for.s
+cc -o test-for.exe test-for.s src/midifile.o
+./test-for.exe
+diff -b test-for.out tests/test-for.out > test-for.diff
+###### SUCCESS
+
+###### Testing test-gcd-recursive
+./src/improv.native tests/test-gcd-recursive.impv > test-gcd-recursive.ll
+llc -relocation-model=pic test-gcd-recursive.ll > test-gcd-recursive.s
+cc -o test-gcd-recursive.exe test-gcd-recursive.s src/midifile.o
+./test-gcd-recursive.exe
+diff -b test-gcd-recursive.out tests/test-gcd-recursive.out > test-gcd-recursive.diff
+###### SUCCESS
+
+###### Testing test-gcd
+./src/improv.native tests/test-gcd.impv > test-gcd.ll
+llc -relocation-model=pic test-gcd.ll > test-gcd.s
+cc -o test-gcd.exe test-gcd.s src/midifile.o
+./test-gcd.exe
+diff -b test-gcd.out tests/test-gcd.out > test-gcd.diff
+###### SUCCESS
+
+###### Testing test-if
+./src/improv.native tests/test-if.impv > test-if.ll
+llc -relocation-model=pic test-if.ll > test-if.s
+cc -o test-if.exe test-if.s src/midifile.o
+./test-if.exe
+diff -b test-if.out tests/test-if.out > test-if.diff
+###### SUCCESS
+
 ###### Testing test-mcd
 ./src/improv.native tests/test-mcd.impv > test-mcd.ll
 llc -relocation-model=pic test-mcd.ll > test-mcd.s
 cc -o test-mcd.exe test-mcd.s src/midifile.o
 ./test-mcd.exe
 diff -b test-mcd.out tests/test-mcd.out > test-mcd.diff
+###### SUCCESS
+
+###### Testing test-note
+./src/improv.native tests/test-note.impv > test-note.ll
+llc -relocation-model=pic test-note.ll > test-note.s
+cc -o test-note.exe test-note.s src/midifile.o
+./test-note.exe
+diff -b test-note.out tests/test-note.out > test-note.diff
+###### SUCCESS
+
+###### Testing test-note2
+./src/improv.native tests/test-note2.impv > test-note2.ll
+llc -relocation-model=pic test-note2.ll > test-note2.s
+cc -o test-note2.exe test-note2.s src/midifile.o
+./test-note2.exe
+diff -b test-note2.out tests/test-note2.out > test-note2.diff
+###### SUCCESS
+
+###### Testing test-note3
+./src/improv.native tests/test-note3.impv > test-note3.ll
+llc -relocation-model=pic test-note3.ll > test-note3.s
+cc -o test-note3.exe test-note3.s src/midifile.o
+./test-note3.exe
+diff -b test-note3.out tests/test-note3.out > test-note3.diff
+###### SUCCESS
+
+###### Testing test-printa
+./src/improv.native tests/test-printa.impv > test-printa.ll
+llc -relocation-model=pic test-printa.ll > test-printa.s
+cc -o test-printa.exe test-printa.s src/midifile.o
+./test-printa.exe
+diff -b test-printa.out tests/test-printa.out > test-printa.diff
+###### SUCCESS
+
+###### Testing test-printbig
+./src/improv.native tests/test-printbig.impv > test-printbig.ll
+llc -relocation-model=pic test-printbig.ll > test-printbig.s
+cc -o test-printbig.exe test-printbig.s src/midifile.o
+./test-printbig.exe
+diff -b test-printbig.out tests/test-printbig.out > test-printbig.diff
+###### SUCCESS
+
+###### Testing test-printi
+./src/improv.native tests/test-printi.impv > test-printi.ll
+llc -relocation-model=pic test-printi.ll > test-printi.s
+cc -o test-printi.exe test-printi.s src/midifile.o
+./test-printi.exe
+diff -b test-printi.out tests/test-printi.out > test-printi.diff
+###### SUCCESS
+
+###### Testing test-printmidi
+./src/improv.native tests/test-printmidi.impv > test-printmidi.ll
+llc -relocation-model=pic test-printmidi.ll > test-printmidi.s
+cc -o test-printmidi.exe test-printmidi.s src/midifile.o
+./test-printmidi.exe
+diff -b test-printmidi.out tests/test-printmidi.out > test-printmidi.diff
+###### SUCCESS
+
+###### Testing test-printn
+./src/improv.native tests/test-printn.impv > test-printn.ll
+llc -relocation-model=pic test-printn.ll > test-printn.s
+cc -o test-printn.exe test-printn.s src/midifile.o
+./test-printn.exe
+diff -b test-printn.out tests/test-printn.out > test-printn.diff
+###### SUCCESS
+
+###### Testing test-prints
+./src/improv.native tests/test-prints.impv > test-prints.ll
+llc -relocation-model=pic test-prints.ll > test-prints.s
+cc -o test-prints.exe test-prints.s src/midifile.o
+./test-prints.exe
+diff -b test-prints.out tests/test-prints.out > test-prints.diff
+###### SUCCESS
+
+###### Testing test-render
+./src/improv.native tests/test-render.impv > test-render.ll
+llc -relocation-model=pic test-render.ll > test-render.s
+cc -o test-render.exe test-render.s src/midifile.o
+./test-render.exe
+diff -b test-render.out tests/test-render.out > test-render.diff
+###### SUCCESS
+
+###### Testing test-sort
+./src/improv.native tests/test-sort.impv > test-sort.ll
+llc -relocation-model=pic test-sort.ll > test-sort.s
+cc -o test-sort.exe test-sort.s src/midifile.o
+./test-sort.exe
+diff -b test-sort.out tests/test-sort.out > test-sort.diff
+###### SUCCESS
+
+###### Testing test-var-int
+./src/improv.native tests/test-var-int.impv > test-var-int.ll
+llc -relocation-model=pic test-var-int.ll > test-var-int.s
+cc -o test-var-int.exe test-var-int.s src/midifile.o
+./test-var-int.exe
+diff -b test-var-int.out tests/test-var-int.out > test-var-int.diff
+###### SUCCESS
+
+###### Testing test-var-string
+./src/improv.native tests/test-var-string.impv > test-var-string.ll
+llc -relocation-model=pic test-var-string.ll > test-var-string.s
+cc -o test-var-string.exe test-var-string.s src/midifile.o
+./test-var-string.exe
+diff -b test-var-string.out tests/test-var-string.out > test-var-string.diff
+###### SUCCESS
+
+###### Testing test-while
+./src/improv.native tests/test-while.impv > test-while.ll
+llc -relocation-model=pic test-while.ll > test-while.s
+cc -o test-while.exe test-while.s src/midifile.o
+./test-while.exe
+diff -b test-while.out tests/test-while.out > test-while.diff
+###### SUCCESS
+
+###### Testing fail-duplicate-function
+./src/improv.native < tests/fail-duplicate-function.impv 2> fail-duplicate-function.err >> testall.log
+diff -b fail-duplicate-function.err tests/fail-duplicate-function.err > fail-duplicate-function.diff
+###### SUCCESS
+
+###### Testing fail-inconsistent-arr-type
+./src/improv.native < tests/fail-inconsistent-arr-type.impv 2> fail-inconsistent-arr-type.err >> testall.log
+diff -b fail-inconsistent-arr-type.err tests/fail-inconsistent-arr-type.err > fail-inconsistent-arr-type.diff
+###### SUCCESS
+
+###### Testing fail-inconsistent-return-type
+./src/improv.native < tests/fail-inconsistent-return-type.impv 2> fail-inconsistent-return-type.err >> testall.log
+diff -b fail-inconsistent-return-type.err tests/fail-inconsistent-return-type.err > fail-inconsistent-return-type.diff
+###### SUCCESS
+
+###### Testing fail-rhythm
+./src/improv.native < tests/fail-rhythm.impv 2> fail-rhythm.err >> testall.log
+diff -b fail-rhythm.err tests/fail-rhythm.err > fail-rhythm.diff
+###### SUCCESS
+
+###### Testing fail-tonetype
+./src/improv.native < tests/fail-tonetype.impv 2> fail-tonetype.err >> testall.log
+diff -b fail-tonetype.err tests/fail-tonetype.err > fail-tonetype.diff
+###### SUCCESS
+
+###### Testing fail-undeclared-identifier
+./src/improv.native < tests/fail-undeclared-identifier.impv 2> fail-undeclared-identifier.err >> testall.log
+diff -b fail-undeclared-identifier.err tests/fail-undeclared-identifier.err > fail-undeclared-identifier.diff
+###### SUCCESS
+
+###### Testing fail-undefined-function
+./src/improv.native < tests/fail-undefined-function.impv 2> fail-undefined-function.err >> testall.log
+diff -b fail-undefined-function.err tests/fail-undefined-function.err > fail-undefined-function.diff
 ###### SUCCESS

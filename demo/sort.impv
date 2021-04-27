@@ -1,13 +1,12 @@
 /* Generating sound of different sorting algorithms */
 
-note[] bubble;
-note[] selection;
-
-func int[] bubbleSort(int[] a, int n){
+func note[] bubbleSort(int[] a, int n, note[] notes){
   int i;
   int j;
   int tmp;
-  printa(a);
+  note[] tmparr;
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
 
   for (i = 0; i < n-1; i = i+1){
     for (j = 0; j < n-i-1; j = j+1){
@@ -15,19 +14,27 @@ func int[] bubbleSort(int[] a, int n){
         tmp = a[j];
         a[j] = a[j+1];
         a[j+1] = tmp;
-        printa(a);
+        tmparr = convert(a, n);
+        notes = append(notes, tmparr);
       }
     } 
   } 
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
+  printNoteArr(notes);
   printa(a);
-  return a;
+  return notes;
 }
 
-func int[] selectionSort(int[] a, int n){
+func note[] selectionSort(int[] a, int n, note[] notes){
   int i;
   int j;
   int tmp;
   int min_idx;
+  note[] tmparr;
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
+
   printa(a);
 
   for (i = 0; i < n-1; i = i+1){
@@ -42,89 +49,48 @@ func int[] selectionSort(int[] a, int n){
     tmp = a[min_idx];
     a[min_idx] = a[i];
     a[i] = tmp;   
+    tmparr = convert(a, n);
+    notes = append(notes, tmparr);
     printa(a);
   }   
+  tmparr = convert(a, n);
+  notes = append(notes, tmparr);
+  printNoteArr(notes);
   printa(a);
-  return a;
+  return notes;
 }
 
-/*
-
-func note[] convertIntToNote(int[] a, int n){
+func note[] convert(int[] a, int n){
   int i;
   note[] notes;
   note tmp;
   int val;
 
-  notes = [<1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">];
+  notes = [<1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">, <1, "wh">];
   
-  for(i = 0; i < n-1; i = i+1){
-
-    tmp = <a[i]%5, "hf">;
+  for(i = 0; i < n; i = i+1){
+    tmp = <a[i]%5, "qr">;
     notes[i] = tmp;
   }
 
   return notes;
-}*/
+}
 
 
 func int main() {
   int[] a;
+  note[] bubble;
+  note[] selection;
 
   prints("BUBBLE SORT");
-  a = [23, 11, 39, 44, 2, 16, 52];
-  bubbleSort(a, 7);
+  a = [54, 26, 11, 10, 32, 43];
+  bubble = [<0, "qr">];
+  render(bubbleSort(a, 6, bubble), "demo/bubble.mid", 13, 120);
 
   prints("SELECTION SORT");
-  a = [23, 11, 39, 44, 2, 16, 52];
-  selectionSort(a, 7);
-
-  return 0;
-}
-
-/*
-
-func int main() {
-  int[] a;
-  note[] notes;
-
-  a = [23, 11, 39, 44, 2, 16, 52];
-  
-  render(convertIntToNote(a, 7), "before.mid", 1, 160);
-
-  bubbleSort(a, 7);
-
-  render(convertIntToNote(a, 7), "after.mid", 1, 160);
-
-  return 0;
-}
-*/
-
-
-/*
-func int main() {
-  int[] a;
-
-  a = [23, 11, 39, 44, 2, 16, 52];
-  bubbleSort(a, 7);
-
-  a = [23, 11, 39, 44, 2, 16, 52];
-  selectionSort(a, 7);
-  return 0;
-}
-*/
-
-func int main() {
-  int[] a;
-  note[] notes;
-
-  a = [23, 11, 39, 44, 2, 16, 52];
-
-  render(convertIntToNote(a, 7), "before.mid", 1, 120);
-
-  bubbleSort(a, 7);
-
-  render(convertIntToNote(a, 7), "after.mid", 1, 120);
+  a = [54, 26, 11, 10, 32, 43];
+  selection = [<0, "qr">];
+  render(selectionSort(a, 6, selection), "demo/selection.mid", 13, 120);
 
   return 0;
 }

@@ -1,5 +1,3 @@
-(* Semantically-checked Abstract Syntax Tree and functions for printing it *)
-
 open Ast
 
 type sexpr = typ * sx
@@ -7,9 +5,7 @@ and sx =
     SLitBool of bool 
   | SLitInt of int 
   | SLitString of string
-  | SLitTone of int 
-  | SLitRhythm of string 
-  | SLitNote of sexpr * string (* SLitTone, SLitRhythm *)
+  | SLitNote of sexpr * string
   | SLitArray of sexpr list 
   | SId of string
   | SBinop of sexpr * op * sexpr
@@ -18,7 +14,6 @@ and sx =
   | SCall of string * sexpr list
   | SArrayAccess of string * sexpr
   | SArrayAssign of string * sexpr * sexpr
-  | SArrayAppend of sexpr * sexpr
   | SNoExpr
 
 type sstmt =
@@ -47,8 +42,6 @@ let rec string_of_sexpr (t, e) =
   | SLitBool(false) -> "false"
   | SLitInt(i) -> string_of_int i
   | SLitString(s) -> s
-  | SLitTone(t) -> string_of_int t
-  | SLitRhythm(r) -> r
   | SLitNote(t, r) -> "<" ^ string_of_sexpr t ^ ", " ^ r ^ ">"
   | SLitArray(el) -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
   | SId(s) -> s
@@ -60,7 +53,6 @@ let rec string_of_sexpr (t, e) =
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SArrayAccess(s, e) -> s ^ "[" ^ string_of_sexpr e ^ "]"
   | SArrayAssign(v, l, e) -> v ^ "[" ^ string_of_sexpr l ^ "]" ^ " = " ^ string_of_sexpr e
-  | SArrayAppend(a1, a2) -> string_of_sexpr a1 ^ " $ " ^ string_of_sexpr a2
   | SNoExpr -> ""
 				  ) ^ ")"				     
 

@@ -1,4 +1,4 @@
-(* Semantic checking *)
+(* Authors: Emily Li, Natalia Dorogi, Alice Zhang *)
 
 open Ast
 open Sast
@@ -40,7 +40,6 @@ let check (globals, functions) =
     in List.fold_left add_bind StringMap.empty [ ("print", Int); ("printi", Int); ("prints", String); ("printn", Note); ("printbig", Int); ("printmidi", String); ("printa", Array(Int)); ("printNoteArr", Array(Note))]; 
   in
 
-  (* TODO: add render function, printarray *)
   let built_in_decls =
     StringMap.add "render" {
       ftype = None;
@@ -108,14 +107,7 @@ let check (globals, functions) =
     (* Raise exception if given tone is not valid (only 1-6) *)
     let check_tone = function
       (Int, t) -> (Int, t)
-
-      (* how to check if t is in between values ?? *)
-         
-        (* if t >= 0 && t <= 5 then (Int, t *)
       | _ -> raise (Failure ("invalid tone assignment, must be int expression")) 
-(*       
-      if t >= 0 && t <= 5 then t
-      else raise (Failure ("invalid tone assignment, must be within 0-5"))  *)
     in 
 
     (* Raise exception if given rhythm is not valid *)
@@ -129,23 +121,6 @@ let check (globals, functions) =
         | _ -> raise (Failure ("invalid rhythm assignment " ^ r))
       in 
 
-    (* let check_type lvaluet rvaluet err =
-      if (String.compare (string_of_typ lvaluet) (string_of_typ rvaluet)) == 0 then lvaluet else raise err
-   in
-
-    let var_symbols = List.fold_left (fun m (t, n) -> StringMap.add n t m) 
-       StringMap.empty func.params in *)
-
-    (* let array_access_type = function
-      Array(t) -> t
-      | _ -> raise(Failure("Can only access a[x] from an array a")) 
-    in *)
-
-    let match_array = function
-        Array(_) -> true
-      | _ -> false
-    in
-
     let get_array_type = function
         Array(t) -> t
       | _ -> raise (Failure "invalid array type")
@@ -156,14 +131,8 @@ let check (globals, functions) =
         LitInt  l -> (Int, SLitInt l)
       | LitString l -> (String, SLitString l)
       | LitBool l  -> (Bool, SLitBool l)
-      (* | LitTone t -> (Tone, SLitTone (check_tone t)) *)
-      | LitRhythm r -> (Rhythm, SLitRhythm (check_rhythm r))
       | LitNote (t, r) -> 
         let (typ, t') = expr t in 
-        (* let rec check_int typ = 
-          match typ with 
-          | Int -> Int
-          | _ -> raise (Failure ("invalid tone assignment, must be int expression")) *)
         (Note, SLitNote(check_tone(typ, t'), check_rhythm r)) 
       | LitArray l -> let array = List.map expr l in
           let rec type_check = function
@@ -176,44 +145,12 @@ let check (globals, functions) =
       | ArrayAccess (a, i) -> 
         let (t, i') = expr i in
         let ty = (type_of_identifier a) in
-        (* let ty' = match t with
-            Array(ty) -> ty
-          | _ -> raise (Failure ("invalid array type")) in *)
         (get_array_type ty, SArrayAccess (a, (t, i')))
-        
-        (* (Int, SLitInt 10) *)
-
-      (* ArrayAccess 
-      Return string & semantically checked sexpr
-      (string, sexpr)
-
-      Check s is an array
-      e is an integer
-
-      Type of array access = type of elements of array *)
-                    
       | ArrayAssign(v, i, e) -> 
         let (t, i') = expr i in
         let (te, e') = expr e in
         let ty = (type_of_identifier v) in
-        (* let ty' = match t with
-            Array(ty) -> ty
-          | _ -> raise (Failure ("invalid array type")) in *)
         (get_array_type ty, SArrayAssign (v, (t, i'), (te, e')))
-        
-        (* (Int, SLitInt 11) *)
-
-      | ArrayAppend(a1, a2) -> 
-          let (t1, a1') = expr a1 in
-          let (t2, a2') = expr a2 in
-          (* let ty1 = (type_of_identifier a1') in *)
-          (* let ty' = match t with
-              Array(ty) -> ty
-            | _ -> raise (Failure ("invalid array type")) in *)
-          (t1, SArrayAppend ((t1, a1'), (t2, a2')))
-          
-          (* (Int, SLitInt 11) *)
-
       | NoExpr     -> (None, SNoExpr)
       | Id s       -> (type_of_identifier s, SId s)
       | Assign(var, e) as ex -> 
@@ -225,7 +162,6 @@ let check (globals, functions) =
       | Uniop(op, e) as ex -> 
           let (t, e') = expr e in
           let ty = match op with
-            (* Neg when t = Int || t = Float -> t *)
           | Not when t = Bool -> Bool
           | _ -> raise (Failure ("illegal unary operator " ^ 
                                  string_of_uop op ^ string_of_typ t ^
@@ -240,8 +176,6 @@ let check (globals, functions) =
           let ty = match op with
             Add | Sub | Mul | Div | Mod when same && t1 = Int  -> Int
           | Eq | Neq            when same               -> Bool
-          (* | Concat | Dup when same && t1 = Array(t1) -> Array(t1) *)
-          (* | Bind when same && t1 = Array(Note) -> Array(Note) *)
           | Lt | Lte
                      when same && (t1 = Int) -> Bool
           | And | Or when same && t1 = Bool -> Bool
@@ -264,7 +198,6 @@ let check (globals, functions) =
           in 
           let args' = List.map2 check_call fd.params args
           in (fd.ftype, SCall(fname, args'))
-      (* | _ -> (None, SNoExpr) *)
     in
 
     let check_bool_expr e = 
@@ -296,7 +229,6 @@ let check (globals, functions) =
             | s :: ss         -> check_stmt s :: check_stmt_list ss
             | []              -> []
           in SBlock(check_stmt_list sl)
-      (* |  _  -> raise (Failure "this statement is undefined") *)
 
     in (* body of check_function *)
     { sftype = func.ftype;

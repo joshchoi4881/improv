@@ -1,5 +1,0 @@
-func int main() {
-  note n;
-  n = <6, "wh">;
-  return 0;
-}
